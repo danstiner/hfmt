@@ -1,0 +1,38 @@
+language: haskell
+
+env:
+ - GHCVER=7.6.3
+ - GHCVER=7.8.2
+ - GHCVER=head
+
+matrix:
+  fast_finish: true
+  allow_failures:
+   - env: GHCVER=head
+
+cache:
+  directories:
+   - $HOME/.cabal
+   - $HOME/.ghc
+
+before_install:
+ - sudo add-apt-repository -y ppa:hvr/ghc
+ - sudo add-apt-repository -y "deb http://us-east-1.ec2.archive.ubuntu.com/ubuntu/ trusty main"
+ - sudo apt-get update
+ - sudo apt-get install cabal-install-1.20 ghc-$GHCVER
+ - sudo apt-get install libleveldb-dev -t trusty
+
+install:
+ - export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/1.20/bin:$PATH
+ - cabal --version
+ - cabal update
+ - cabal install -j --enable-tests --enable-benchmarks --only-dependencies
+
+script:
+ - export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/1.20/bin:$PATH
+ - cabal configure --enable-tests --enable-benchmarks -v2
+ - cabal build
+ - cabal test
+ - cabal check
+ - cabal sdist
+

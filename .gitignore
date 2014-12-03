@@ -1,0 +1,13 @@
+/dist
+/cabal-dev
+*.o
+*.hi
+*.chi
+*.chs.h
+*.tmp
+.virthualenv
+*.sublime-workspace
+.hsenv
+.cabal-sandbox/
+cabal.sandbox.config
+cabal.config

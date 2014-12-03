@@ -1,0 +1,56 @@
+name:                hfmt
+version:             0.0.0.1
+synopsis:            Hfmt formats Haskell programs.
+description:         Hfmt formats Haskell programs. Inspired by gofmt, built on hlint and stylish-haskell
+license:             MIT
+license-file:        LICENSE
+author:              Daniel Stiner
+maintainer:          Daniel Stiner <daniel.stiner@gmail.com>
+stability:           Experimental
+homepage:            http://github.com/danstiner/hfmt
+bug-reports:         http://github.com/danstiner/hfmt/issues
+category:            Language
+build-type:          Simple
+cabal-version:       >=1.9.2
+tested-with:         GHC==7.6.3, GHC==7.8.2
+
+executable hfmt
+  Hs-Source-Dirs:    src
+  Main-Is:           Main.hs
+  Build-Depends:     base == 4.*
+                     , haskell-src-exts
+                     , hlint >= 1.9 , hlint < 2
+                     , optparse-applicative
+                     , stylish-haskell
+                     , Glob
+
+library
+  Hs-Source-Dirs:    src
+  Exposed-Modules:   Language.Haskell.Format
+                     Language.Haskell.Format.Tests
+  Build-Depends:     base == 4.*
+                     , haskell-src-exts
+                     , hlint >= 1.9.13 , hlint < 2
+                     , stylish-haskell
+                     , HUnit
+                     , Glob
+
+test-suite test
+  Type:              exitcode-stdio-1.0
+  Hs-Source-Dirs:    src test
+  Main-Is:           TestSuite.hs
+  Build-Depends:     base == 4.*
+                     , haskell-src-exts
+                     , hlint >= 1.9 , hlint < 2
+                     , stylish-haskell
+                     , Glob
+
+                     , HUnit
+                     , QuickCheck >= 2.7
+                     , test-framework
+                     , test-framework-hunit
+                     , test-framework-quickcheck2
+
+source-repository head
+  type: git
+  location: git://github.com:danstiner/transpiler.git
