@@ -27,7 +27,9 @@ executable hfmt
 library
   Hs-Source-Dirs:    src
   Exposed-Modules:   Language.Haskell.Format
-                     Language.Haskell.Format.Tests
+                     , Language.Haskell.Format.Tests
+                     , Language.Haskell.Format.HLint
+                     , Language.Haskell.Format.Stylish
   Build-Depends:     base == 4.*
                      , haskell-src-exts
                      , hlint >= 1.9.13 , hlint < 2
