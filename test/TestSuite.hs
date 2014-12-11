@@ -5,10 +5,6 @@ import Test.Framework.Providers.HUnit
 import Test.HUnit                     hiding (Test)
 
 main :: IO ()
-main = do
-  src <- hunitGlob "src/**/*.hs"
-  test <- hunitGlob "test/**/*.hs"
-  defaultMain [
-      testGroup "Validate Formatting in src/**/*.hs" (hUnitTestToTests src)
-    , testGroup "Validate Formatting in test/**/*.hs" (hUnitTestToTests test)
-    ]
+main = defaultMain [
+    testGroup "Check source formatting" (hUnitTestToTests $ Hfmt.hunitPackage "hfmt.cabal")
+  ]

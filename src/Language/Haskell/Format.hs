@@ -1,4 +1,4 @@
-module Language.Haskell.Format (autoSettings, check, checkPath, Stylish.FormatResult (..)) where
+module Language.Haskell.Format (autoSettings, check, checkPath, CheckResult (..), Stylish.FormatResult (..)) where
 
 import qualified Language.Haskell.Format.HLint   as HLint
 import qualified Language.Haskell.Format.Stylish as Stylish
@@ -8,7 +8,7 @@ import           Language.Haskell.HLint3         (Idea)
 
 data Settings = Settings { unHlintSettings :: HLint.Settings, unStylishSettings :: Stylish.Settings }
 
-type CheckResult = ([Idea], Stylish.FormatResult)
+data CheckResult = CheckResult (Maybe FilePath) [Idea] Stylish.FormatResult
 
 autoSettings :: IO Settings
 autoSettings = Settings <$> HLint.autoSettings <*> Stylish.autoSettings
@@ -20,4 +20,4 @@ check :: Settings -> Maybe FilePath -> String -> IO (Either String CheckResult)
 check settings path contents = do
   hlint <- HLint.check (unHlintSettings settings) path contents
   stylish <- Stylish.check (unStylishSettings settings) path contents
-  return $ (\a b -> (a,b)) <$> hlint <*> stylish
+  return $ CheckResult path <$> hlint <*> stylish
