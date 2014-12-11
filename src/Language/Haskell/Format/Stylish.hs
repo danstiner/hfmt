@@ -1,9 +1,11 @@
-module Language.Haskell.Format.Stylish (check, Settings, FormatResult (..), autoSettings) where
+module Language.Haskell.Format.Stylish (check, Settings, FormatResult (..), autoSettings, showDiff) where
 
 import Control.Applicative
-import Language.Haskell.Stylish as Stylish
+import Data.Algorithm.Diff
+import Data.Algorithm.DiffOutput
+import Language.Haskell.Stylish  as Stylish
 
-data FormatResult = FormatResult String String
+data FormatResult = FormatResult String String deriving (Show)
 data Settings = Settings Stylish.Config
 
 autoSettings :: IO Settings
@@ -21,3 +23,6 @@ check settings path contents =
     (Settings config) = settings
     extensions = Stylish.configLanguageExtensions config
     steps = Stylish.configSteps config
+
+showDiff :: FormatResult -> String
+showDiff (FormatResult a b) = ppDiff $ getGroupedDiff (lines a) (lines b)

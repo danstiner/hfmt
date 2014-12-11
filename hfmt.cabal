@@ -19,11 +19,12 @@ executable hfmt
   Main-Is:           Main.hs
   Build-Depends:     base == 4.*
                      , Cabal
+                     , cmdargs
+                     , Diff
                      , directory
                      , Glob
                      , haskell-src-exts
                      , hlint >= 1.9 , hlint < 2
-                     , optparse-applicative
                      , stylish-haskell
 
 library
@@ -34,6 +35,7 @@ library
                      , Language.Haskell.Format.Stylish
   Build-Depends:     base == 4.*
                      , Cabal
+                     , Diff
                      , directory
                      , Glob
                      , haskell-src-exts
@@ -47,6 +49,7 @@ test-suite test
   Main-Is:           TestSuite.hs
   Build-Depends:     base == 4.*
                      , Cabal
+                     , Diff
                      , directory
                      , Glob
                      , haskell-src-exts
