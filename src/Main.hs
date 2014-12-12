@@ -8,14 +8,14 @@ import System.Console.CmdArgs
 
 data Args = Args {
     onlyPaths :: Bool
-  , inPlace   :: Bool
+  , shouldReplace   :: Bool
   , paths     :: [FilePath]
   } deriving (Show, Data, Typeable)
 
 argsDescription = Args
   {
       onlyPaths = False &= explicit &= name "l" &= help "Do not print reformatted sources or hints to standard output. If a file's formatting is different from hfmt's or has unimplemented hints, print its name to standard output."
-    , inPlace = False &= explicit &= name "w" &= help "Do not print reformatted sources to standard output. If a file's formatting is different from hfmt's, overwrite it with hfmt's version."
+    , shouldReplace = False &= explicit &= name "w" &= help "Do not print reformatted sources to standard output. If a file's formatting is different from hfmt's, overwrite it with hfmt's version."
     , paths = [] &= typ "path ..." &= args
   }
   &= summary "Hfmt 0.0.1.0 - A formatter for Haskell programs"
@@ -33,8 +33,9 @@ run args settings = mapM_ run' (paths args)
   where
     run' path = checkPath settings path >>= process
     process result = do
-      when (inPlace args) $ replace result
-      printResult (onlyPaths args) result
+      if (shouldReplace args)
+        then replace result
+        else printResult (onlyPaths args) result
 
 printResult :: Bool -> Either String CheckResult -> IO ()
 printResult True = printPath
