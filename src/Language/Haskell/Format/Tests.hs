@@ -32,7 +32,7 @@ hunitPackage path = TestCase $ do
   results <- mapM (Format.checkPath settings) . sources $ concat files
   mapM_ assertResult results
   where
-    sources = filter (isSuffixOf ".hs")
+    sources = filter (\path -> ".hs" `isSuffixOf` path || ".lhs" `isSuffixOf` path)
 
 assertResult :: Either String CheckResult -> IO ()
 assertResult r = case r of
