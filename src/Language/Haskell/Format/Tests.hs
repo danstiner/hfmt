@@ -59,10 +59,14 @@ expandPath path = do
     else return [path]
 
 sourcePaths :: GenericPackageDescription -> [FilePath]
-sourcePaths = nub . paths . flattenPackageDescription
+sourcePaths pkg = nub . concat $ map ($ pkg) extractors
   where
-    paths pkg = srcDirs pkg ++ extraSrcFiles pkg
-    srcDirs = concatMap hsSourceDirs . allBuildInfo
+    extractors = [
+        maybe [] (hsSourceDirs . libBuildInfo . condTreeData) . condLibrary
+      , concatMap (hsSourceDirs . buildInfo . condTreeData . snd) . condExecutables
+      , concatMap (hsSourceDirs . testBuildInfo . condTreeData . snd) . condTestSuites
+      , concatMap (hsSourceDirs . benchmarkBuildInfo . condTreeData . snd) . condBenchmarks
+      ]
 
 hunitTestcase :: FilePath -> Test
 hunitTestcase path = TestLabel path . TestCase $ do

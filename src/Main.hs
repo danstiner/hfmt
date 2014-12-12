@@ -7,9 +7,9 @@ import Data.Maybe
 import System.Console.CmdArgs
 
 data Args = Args {
-    onlyPaths :: Bool
-  , shouldReplace   :: Bool
-  , paths     :: [FilePath]
+    onlyPaths     :: Bool
+  , shouldReplace :: Bool
+  , paths         :: [FilePath]
   } deriving (Show, Data, Typeable)
 
 argsDescription = Args
@@ -20,7 +20,7 @@ argsDescription = Args
   }
   &= summary "Hfmt 0.0.1.0 - A formatter for Haskell programs"
   &= program "hfmt"
-  &= details ["Given a file, it operates on that file. By default, hfmt prints the reformatted sources and hints to standard output."]
+  &= details ["Given a file, it operates on that file. By default, hfmt prints the diffs of the reformatted sources and hints to standard output."]
 
 main :: IO ()
 main = do
@@ -32,8 +32,8 @@ run :: Args -> Settings -> IO ()
 run args settings = mapM_ run' (paths args)
   where
     run' path = checkPath settings path >>= process
-    process result = do
-      if (shouldReplace args)
+    process result =
+      if shouldReplace args
         then replace result
         else printResult (onlyPaths args) result
 
