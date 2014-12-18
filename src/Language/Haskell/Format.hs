@@ -53,10 +53,10 @@ checkPath settings path = do
 
 expandPath :: FilePath -> IO [FilePath]
 expandPath filepath = do
-  dir <- doesDirectoryExist filepath
-  if dir
-    then glob (filepath ++ "**/*")
-    else return [filepath]
+    dir <- doesDirectoryExist filepath
+    if dir
+      then glob (filepath ++ "**/*")
+      else return [filepath]
 
 checkFile :: Settings -> FilePath -> IO (Either String CheckResult)
 checkFile settings path = readFile path >>= check settings (Just path)
@@ -83,9 +83,9 @@ sourcePaths pkg = nub . concat $ map ($ pkg) pathExtractors
 
 check :: Settings -> Maybe FilePath -> String -> IO (Either String CheckResult)
 check settings path contents = do
-  hlint <- HLint.check (hlintSettings settings) path contents
-  stylish <- Stylish.check (stylishSettings settings) path contents
-  return $ CheckResult path <$> hlint <*> stylish
+    hlint <- HLint.check (hlintSettings settings) path contents
+    stylish <- Stylish.check (stylishSettings settings) path contents
+    return $ CheckResult path <$> hlint <*> stylish
 
 wasReformatted :: CheckResult -> Bool
 wasReformatted (CheckResult _ ideas (FormatResult before after)) =

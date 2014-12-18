@@ -1,8 +1,9 @@
-module Language.Haskell.Format.Tests (
-    hunit
-  , hunitGlob
-  , hunitPackage
-) where
+module Language.Haskell.Format.Tests
+    (
+      hunit
+    , hunitGlob
+    , hunitPackage
+    ) where
 
 import Control.Applicative
 import Control.Monad

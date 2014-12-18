@@ -1,3 +1,6 @@
-module Language.Haskell.Format.Definitions (FormatResult (..)) where
+module Language.Haskell.Format.Definitions
+    (
+      FormatResult (..)
+    ) where
 
 data FormatResult = FormatResult String String deriving (Show)
