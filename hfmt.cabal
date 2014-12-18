@@ -22,6 +22,7 @@ executable hfmt
                      , cmdargs
                      , Diff
                      , directory
+                     , filepath
                      , Glob
                      , haskell-src-exts
                      , hlint >= 1.9 , hlint < 2
@@ -38,6 +39,7 @@ library
                      , Cabal
                      , Diff
                      , directory
+                     , filepath
                      , Glob
                      , haskell-src-exts
                      , hlint >= 1.9.13 , hlint < 2
@@ -52,6 +54,7 @@ test-suite test
                      , Cabal
                      , Diff
                      , directory
+                     , filepath
                      , Glob
                      , haskell-src-exts
                      , hlint >= 1.9 , hlint < 2

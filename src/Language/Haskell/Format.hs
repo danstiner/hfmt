@@ -19,6 +19,7 @@ import           Distribution.PackageDescription.Parse
 import qualified Distribution.Verbosity                as Verbosity
 import           Language.Haskell.HLint3               (Idea)
 import           System.Directory
+import           System.FilePath
 import           System.FilePath.Glob                  (glob)
 
 import           Language.Haskell.Format.Definitions
@@ -61,13 +62,14 @@ checkFile :: Settings -> FilePath -> IO (Either String CheckResult)
 checkFile settings path = readFile path >>= check settings (Just path)
 
 checkPackage :: Settings -> FilePath -> IO [Either String CheckResult]
-checkPackage settings filepath = do
-  genericPkg <- readPackageDescription Verbosity.silent filepath
-  files <- mapM expandPath $ sourcePaths genericPkg
-  results <- mapM (checkPath settings) . sources $ concat files
-  return (concat results)
+checkPackage settings pkgPath =
+    concat <$> (readPackage pkgPath >>= expandPaths >>= check)
   where
-    sources = filter (\filename -> ".hs" `isSuffixOf` filename || ".lhs" `isSuffixOf` filename)
+    readPackage = readPackageDescription Verbosity.silent
+    expandPaths = mapM (expandPath . (pkgDir </>)) . sourcePaths
+    check       = mapM (checkPath settings) . sources . concat
+    pkgDir      = dropFileName pkgPath
+    sources     = filter (\filename -> ".hs" `isSuffixOf` filename || ".lhs" `isSuffixOf` filename)
 
 sourcePaths :: GenericPackageDescription -> [FilePath]
 sourcePaths pkg = nub . concat $ map ($ pkg) pathExtractors
