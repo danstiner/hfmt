@@ -33,6 +33,7 @@ library
                      , Language.Haskell.Format.Tests
                      , Language.Haskell.Format.HLint
                      , Language.Haskell.Format.Stylish
+  GHC-Options:       -Wall -fno-warn-unused-binds
   Build-Depends:     base == 4.*
                      , Cabal
                      , Diff
@@ -64,4 +65,4 @@ test-suite test
 
 source-repository head
   type: git
-  location: git://github.com:danstiner/transpiler.git
+  location: git://github.com:danstiner/hfmt.git

@@ -1,11 +1,19 @@
-module Language.Haskell.Format.Stylish (check, Settings, FormatResult (..), autoSettings, showDiff) where
+module Language.Haskell.Format.Stylish
+    (
+      autoSettings
+    , check
+    , Settings
+    , showDiff
+    ) where
 
 import Control.Applicative
+
 import Data.Algorithm.Diff
 import Data.Algorithm.DiffOutput
-import Language.Haskell.Stylish  as Stylish
+import Language.Haskell.Stylish            as Stylish
 
-data FormatResult = FormatResult String String deriving (Show)
+import Language.Haskell.Format.Definitions
+
 data Settings = Settings Stylish.Config
 
 autoSettings :: IO Settings

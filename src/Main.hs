@@ -31,7 +31,7 @@ main = do
 run :: Args -> Settings -> IO ()
 run args settings = mapM_ run' (paths args)
   where
-    run' path = checkPath settings path >>= process
+    run' path = checkPath settings path >>= mapM_ process
     process result =
       if shouldReplace args
         then replace result
@@ -47,7 +47,7 @@ printPath (Right r@(CheckResult mPath _ _)) = when (wasReformatted r) $ putStrLn
 
 printContents :: Either String CheckResult -> IO ()
 printContents (Left err) = print err
-printContents (Right r@(CheckResult mPath ideas _)) = when (wasReformatted r) $ print r
+printContents (Right r) = when (wasReformatted r) $ print r
 
 replace :: Either String CheckResult -> IO ()
 replace (Left err) = return ()
