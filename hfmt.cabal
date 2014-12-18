@@ -31,9 +31,10 @@ executable hfmt
 library
   Hs-Source-Dirs:    src
   Exposed-Modules:   Language.Haskell.Format
-                     , Language.Haskell.Format.Tests
+                     , Language.Haskell.Format.Definitions
                      , Language.Haskell.Format.HLint
                      , Language.Haskell.Format.Stylish
+                     , Language.Haskell.Format.Tests
   GHC-Options:       -Wall -fno-warn-unused-binds
   Build-Depends:     base == 4.*
                      , Cabal
