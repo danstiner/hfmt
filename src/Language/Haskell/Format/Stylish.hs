@@ -6,8 +6,6 @@ module Language.Haskell.Format.Stylish
     , showDiff
     ) where
 
-import Control.Applicative
-
 import Data.Algorithm.Diff
 import Data.Algorithm.DiffOutput
 import Language.Haskell.Stylish            as Stylish
