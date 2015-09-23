@@ -5,6 +5,7 @@ module Language.Haskell.Format.TestHelpers
     , hunitPackage
     ) where
 
+import Control.Applicative
 import Control.Monad
 import Language.Haskell.Format as Format
 import System.FilePath.Glob    (glob)

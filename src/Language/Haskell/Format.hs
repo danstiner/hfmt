@@ -11,6 +11,7 @@ module Language.Haskell.Format
     , wasReformatted
     ) where
 
+import           Control.Applicative
 import           Data.List
 import           Data.Maybe
 import           Distribution.PackageDescription
