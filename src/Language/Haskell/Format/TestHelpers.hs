@@ -1,11 +1,10 @@
-module Language.Haskell.Format.Tests
+module Language.Haskell.Format.TestHelpers
     (
       hunit
     , hunitGlob
     , hunitPackage
     ) where
 
-import Control.Applicative
 import Control.Monad
 import Language.Haskell.Format as Format
 import System.FilePath.Glob    (glob)

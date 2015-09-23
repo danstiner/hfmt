@@ -34,7 +34,7 @@ library
                      , Language.Haskell.Format.Definitions
                      , Language.Haskell.Format.HLint
                      , Language.Haskell.Format.Stylish
-                     , Language.Haskell.Format.Tests
+                     , Language.Haskell.Format.TestHelpers
   GHC-Options:       -Wall -fno-warn-unused-binds
   Build-Depends:     base == 4.*
                      , Cabal
