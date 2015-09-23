@@ -1,5 +1,7 @@
 /dist
 /cabal-dev
+/.HTF
+/.stack-work
 *.o
 *.hi
 *.chi
