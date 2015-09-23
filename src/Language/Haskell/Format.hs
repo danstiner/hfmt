@@ -62,11 +62,11 @@ checkFile settings path = readFile path >>= check settings (Just path)
 
 checkPackage :: Settings -> FilePath -> IO [Either String CheckResult]
 checkPackage settings pkgPath =
-    concat <$> (readPackage pkgPath >>= expandPaths >>= check)
+    concat <$> (readPackage pkgPath >>= expandPaths >>= checkPaths)
   where
     readPackage = readPackageDescription Verbosity.silent
     expandPaths = mapM (expandPath . (pkgDir </>)) . sourcePaths
-    check       = mapM (checkPath settings) . sources . concat
+    checkPaths  = mapM (checkPath settings) . sources . concat
     pkgDir      = dropFileName pkgPath
     sources     = filter (\filename -> ".hs" `isSuffixOf` filename || ".lhs" `isSuffixOf` filename)
 
