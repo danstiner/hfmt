@@ -14,20 +14,6 @@ build-type:          Simple
 cabal-version:       >=1.9.2
 tested-with:         GHC==7.4.2, GHC==7.6.3, GHC==7.8.2
 
-executable hfmt
-  Hs-Source-Dirs:    src
-  Main-Is:           Main.hs
-  Build-Depends:     base == 4.*
-                     , Cabal
-                     , cmdargs
-                     , Diff
-                     , directory
-                     , filepath
-                     , Glob
-                     , haskell-src-exts
-                     , hlint >= 1.9 , hlint < 2
-                     , stylish-haskell
-
 library
   Hs-Source-Dirs:    src
   Exposed-Modules:   Language.Haskell.Format
@@ -47,19 +33,19 @@ library
                      , HUnit
                      , stylish-haskell
 
-test-suite test
-  Type:              exitcode-stdio-1.0
-  Hs-Source-Dirs:    src test
-  Main-Is:           TestSuite.hs
+executable hfmt
+  Hs-Source-Dirs:    app
+  Main-Is:           Main.hs
   Build-Depends:     base == 4.*
-                     , Cabal
-                     , Diff
-                     , directory
-                     , filepath
-                     , Glob
-                     , haskell-src-exts
-                     , hlint >= 1.9 , hlint < 2
-                     , stylish-haskell
+                   , hfmt
+                   , cmdargs
+
+test-suite hfmt-self-formatting-test
+  Type:              exitcode-stdio-1.0
+  Hs-Source-Dirs:    test/self-formatting
+  Main-Is:           Spec.hs
+  Build-Depends:     base == 4.*
+                     , hfmt
 
                      , HUnit
                      , QuickCheck >= 2.7
