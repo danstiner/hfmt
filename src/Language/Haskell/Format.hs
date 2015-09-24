@@ -85,7 +85,7 @@ check :: Settings -> Maybe FilePath -> String -> IO (Either String CheckResult)
 check settings path contents = do
     hlint <- HLint.check (hlintSettings settings) path contents
     stylish <- Stylish.check (stylishSettings settings) path contents
-    return $ CheckResult path <$> hlint <*> stylish
+    return $ CheckResult (fmap normalise path) <$> hlint <*> stylish
 
 wasReformatted :: CheckResult -> Bool
 wasReformatted (CheckResult _ ideas (FormatResult before after)) =
