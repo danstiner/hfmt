@@ -51,12 +51,6 @@ checkPath settings path = do
   where
     isCabal = ".cabal" `isSuffixOf` path
 
-expandPath :: FilePath -> IO [FilePath]
-expandPath filepath = do
-    dir <- doesDirectoryExist filepath
-    if dir
-      then glob (filepath ++ "**/*")
-      else return [filepath]
 
 checkFile :: Settings -> FilePath -> IO (Either String CheckResult)
 checkFile settings path = readFile path >>= check settings (Just path)
@@ -70,6 +64,13 @@ checkPackage settings pkgPath =
     checkPaths  = mapM (checkPath settings) . sources . concat
     pkgDir      = dropFileName pkgPath
     sources     = filter (\filename -> ".hs" `isSuffixOf` filename || ".lhs" `isSuffixOf` filename)
+
+expandPath :: FilePath -> IO [FilePath]
+expandPath filepath = do
+    dir <- doesDirectoryExist filepath
+    if dir
+      then glob (filepath ++ "**/*")
+      else return [filepath]
 
 sourcePaths :: GenericPackageDescription -> [FilePath]
 sourcePaths pkg = nub . concat $ map ($ pkg) pathExtractors
