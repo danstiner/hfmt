@@ -29,9 +29,11 @@ main = do
   run args settings
 
 run :: Args -> Settings -> IO ()
-run args settings = mapM_ run' (paths args)
+run args settings = run' (paths args)
   where
-    run' path = checkPath settings path >>= mapM_ process
+    run' [] = run'' "."
+    run' paths = mapM_ run'' paths
+    run'' path = checkPath settings path >>= mapM_ process
     process result =
       if shouldReplace args
         then replace result
