@@ -60,7 +60,7 @@ checkDirectory settings path = do
     then concatMapM (checkPath settings) contents
     else concatMapM (checkPath settings) cabalFiles
   where
-    getDirectoryContentsFullPaths path = (\\ [".", ".."]) . map (path </>) <$> getDirectoryContents path
+    getDirectoryContentsFullPaths path = map (path </>) . (\\ [".", ".."]) <$> getDirectoryContents path
 
 concatMapM        :: (Monad m) => (a -> m [b]) -> [a] -> m [b]
 concatMapM f xs   =  fmap concat (mapM f xs)
