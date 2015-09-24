@@ -12,6 +12,7 @@ module Language.Haskell.Format
     ) where
 
 import           Control.Applicative
+import           Control.Monad
 import           Data.List
 import           Data.Maybe
 import           Distribution.PackageDescription
@@ -44,13 +45,31 @@ checkPath :: Settings -> FilePath -> IO [Either String CheckResult]
 checkPath settings path = do
     isDir <- doesDirectoryExist path
     if isDir
-      then return [Left $ path ++ " is a directory"]
+      then checkDirectory settings path
       else if isCabal
         then checkPackage settings path
         else (:[]) <$> checkFile settings path
   where
     isCabal = ".cabal" `isSuffixOf` path
 
+checkDirectory :: Settings -> FilePath -> IO [Either String CheckResult]
+checkDirectory settings path = do
+  contents <- getDirectoryContentsFullPaths path
+  cabalFiles <- filterM isCabalFile contents
+  if null cabalFiles
+    then concatMapM (checkPath settings) contents
+    else concatMapM (checkPath settings) cabalFiles
+  where
+    getDirectoryContentsFullPaths path = (\\ [".", ".."]) . map (path </>) <$> getDirectoryContents path
+
+concatMapM        :: (Monad m) => (a -> m [b]) -> [a] -> m [b]
+concatMapM f xs   =  fmap concat (mapM f xs)
+
+isCabalFile :: FilePath -> IO Bool
+isCabalFile path = (hasCabalExtension &&) <$> isFile
+  where
+    isFile = doesFileExist path
+    hasCabalExtension = ".cabal" `isSuffixOf` path
 
 checkFile :: Settings -> FilePath -> IO (Either String CheckResult)
 checkFile settings path = readFile path >>= check settings (Just path)
