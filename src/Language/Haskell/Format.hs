@@ -63,7 +63,7 @@ checkDirectory settings path = do
     getDirectoryContentsFullPaths path = map (path </>) . (\\ [".", ".."]) <$> getDirectoryContents path
 
 concatMapM        :: (Monad m) => (a -> m [b]) -> [a] -> m [b]
-concatMapM f xs   =  fmap concat (mapM f xs)
+concatMapM f xs   =  liftM concat (mapM f xs)
 
 isCabalFile :: FilePath -> IO Bool
 isCabalFile path = (hasCabalExtension &&) <$> isFile
