@@ -6,21 +6,27 @@ import Control.Monad
 import Data.Maybe
 import System.Console.CmdArgs
 
-data Args = Args {
-    onlyPaths     :: Bool
-  , shouldReplace :: Bool
-  , paths         :: [FilePath]
-  } deriving (Show, Data, Typeable)
+data Args = Args { onlyPaths :: Bool, shouldReplace :: Bool, paths :: [FilePath] }
+  deriving (Show, Data, Typeable)
 
 argsDescription = Args
-  {
-      onlyPaths = False &= explicit &= name "l" &= help "Do not print reformatted sources or hints to standard output. If a file's formatting is different from hfmt's or has unimplemented hints, print its name to standard output."
-    , shouldReplace = False &= explicit &= name "w" &= help "Do not print reformatted sources to standard output. If a file's formatting is different from hfmt's, overwrite it with hfmt's version."
-    , paths = [] &= typ "path ..." &= args
-  }
-  &= summary "Hfmt 0.0.1.0 - A formatter for Haskell programs"
-  &= program "hfmt"
-  &= details ["Given a file, it operates on that file. By default, hfmt prints the diffs of the reformatted sources and hints to standard output."]
+                    { onlyPaths = False &=
+                                  explicit &=
+                                  name "l" &=
+                                  help
+                                    "Do not print reformatted sources or hints to standard output. If a file's formatting is different from hfmt's or has unimplemented hints, print its name to standard output."
+                    , shouldReplace = False &=
+                                      explicit &=
+                                      name "w" &=
+                                      help
+                                        "Do not print reformatted sources to standard output. If a file's formatting is different from hfmt's, overwrite it with hfmt's version."
+                    , paths = [] &= typ "path ..." &= args
+                    }
+                  &= summary "Hfmt 0.0.1.0 - A formatter for Haskell programs"
+                  &= program "hfmt"
+                  &= details
+                       [ "Given a file, it operates on that file. By default, hfmt prints the diffs of the reformatted sources and hints to standard output."
+                       ]
 
 main :: IO ()
 main = do
