@@ -12,7 +12,7 @@ bug-reports:         http://github.com/danstiner/hfmt/issues
 category:            Language
 build-type:          Simple
 cabal-version:       >=1.9.2
-tested-with:         GHC==7.4.2, GHC==7.6.3, GHC==7.8.4, GHC==7.10.2, GHC == 7.11.*
+tested-with:         GHC==7.8.4, GHC==7.10.2, GHC == 7.11.*
 
 library
   Hs-Source-Dirs:    src
