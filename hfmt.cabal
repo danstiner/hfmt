@@ -29,6 +29,7 @@ library
                      , filepath
                      , Glob
                      , haskell-src-exts
+                     , hindent
                      , hlint >= 1.9.13 , hlint < 2
                      , HUnit
                      , stylish-haskell
