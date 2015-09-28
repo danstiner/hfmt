@@ -21,7 +21,7 @@ library
                      , Language.Haskell.Format.HLint
                      , Language.Haskell.Format.Stylish
                      , Language.Haskell.Format.TestHelpers
-  GHC-Options:       -Wall -fno-warn-unused-binds
+  GHC-Options:       -Wall
   Build-Depends:     base == 4.*
                      , Cabal
                      , Diff
@@ -36,6 +36,7 @@ library
 executable hfmt
   Hs-Source-Dirs:    app
   Main-Is:           Main.hs
+  GHC-Options:       -Wall
   Build-Depends:     base == 4.*
                    , hfmt
                    , cmdargs
