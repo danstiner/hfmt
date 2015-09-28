@@ -18,6 +18,7 @@ library
   Hs-Source-Dirs:    src
   Exposed-Modules:   Language.Haskell.Format
                      , Language.Haskell.Format.Definitions
+                     , Language.Haskell.Format.HIndent
                      , Language.Haskell.Format.HLint
                      , Language.Haskell.Format.Stylish
                      , Language.Haskell.Format.TestHelpers
@@ -33,6 +34,7 @@ library
                      , hlint >= 1.9.13 , hlint < 2
                      , HUnit
                      , stylish-haskell
+                     , text
 
 executable hfmt
   Hs-Source-Dirs:    app

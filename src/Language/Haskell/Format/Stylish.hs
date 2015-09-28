@@ -1,10 +1,4 @@
-module Language.Haskell.Format.Stylish
-    (
-      autoSettings
-    , check
-    , Settings
-    , showDiff
-    ) where
+module Language.Haskell.Format.Stylish (autoSettings, check, Settings, showDiff) where
 
 import Control.Applicative
 import Data.Algorithm.Diff
@@ -20,9 +14,9 @@ autoSettings = Settings <$> Stylish.loadConfig (Stylish.makeVerbose False) Nothi
 
 check :: Settings -> Maybe FilePath -> String -> IO (Either String FormatResult)
 check settings path contents =
-    case runResult of
-      Left err -> return $ Left err
-      Right formattedLines -> ret formattedLines
+  case runResult of
+    Left err             -> return $ Left err
+    Right formattedLines -> ret formattedLines
   where
     runResult = Stylish.runSteps extensions path steps (lines contents)
     ret :: [String] -> IO (Either String FormatResult)
