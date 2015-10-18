@@ -20,6 +20,7 @@ type Result = Either String CheckResult
 data Options =
        Options
          { optPrintDiffs     :: Bool
+         , optPrintSources   :: Bool
          , optPrintFilePaths :: Bool
          , optWriteSources   :: Bool
          , optPaths          :: [FilePath]
@@ -29,6 +30,7 @@ optAction :: Options -> Action
 optAction options
   | optPrintDiffs options = PrintDiffs
   | optPrintFilePaths options = PrintFilePaths
+  | optPrintSources options = PrintSources
   | optWriteSources options = WriteSources
   | optPaths options == ["-"] = PrintSources
   | otherwise = PrintDiffs
@@ -38,6 +40,10 @@ optionParser = Options <$> switch
                              (long "print-diffs" <>
                               short 'd' <>
                               help "If a file's formatting is different, print a diff.")
+                       <*> switch
+                             (long "print-sources" <>
+                              short 's' <>
+                              help "If a file's formatting is different, print its source.")
                        <*> switch
                              (long "print-paths" <>
                               short 'l' <>
