@@ -35,6 +35,7 @@ library
                      , HUnit
                      , stylish-haskell
                      , text
+                     , pretty
 
 executable hfmt
   Hs-Source-Dirs:    app

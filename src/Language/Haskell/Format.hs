@@ -47,7 +47,7 @@ showDiff (CheckResult mPath ideas formatted) =
   fromMaybe "<unknown file>" mPath ++
   "\n" ++
   concatMap show ideas ++
-  "\nDiff:" ++
+  "\nDiff:\n" ++
   Stylish.showDiff formatted
 
 showSource :: CheckResult -> String

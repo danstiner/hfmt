@@ -2,8 +2,10 @@ module Language.Haskell.Format.Stylish (autoSettings, check, Settings, showDiff)
 
 import Control.Applicative
 import Data.Algorithm.Diff
+import Data.Algorithm.DiffContext
 import Data.Algorithm.DiffOutput
 import Language.Haskell.Stylish            as Stylish
+import Text.PrettyPrint
 
 import Language.Haskell.Format.Definitions
 
@@ -26,4 +28,8 @@ check settings path contents =
     steps = Stylish.configSteps config
 
 showDiff :: FormatResult -> String
-showDiff (FormatResult a b) = ppDiff $ getGroupedDiff (lines a) (lines b)
+showDiff (FormatResult a b) = render (toDoc diff)
+  where
+    toDoc = prettyContextDiff (text "Original") (text "Reformatted") text
+    diff = getContextDiff context (lines a) (lines b)
+    context = 1
