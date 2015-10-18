@@ -1,62 +1,95 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-
 import Language.Haskell.Format
 
+import Control.Applicative
 import Control.Monad
+import Data.List
 import Data.Maybe
-import System.Console.CmdArgs
+import Data.Monoid
+import Options.Applicative.Builder
+import Options.Applicative.Common
+import Options.Applicative.Extra
+import Text.PrettyPrint.ANSI.Leijen hiding (empty, (<$>), (<>))
 
-data Args = Args { onlyPaths :: Bool, shouldReplace :: Bool, paths :: [FilePath] }
-  deriving (Show, Data, Typeable)
+data Action = PrintDiffs
+            | PrintSources
+            | PrintFilePaths
+            | WriteSources
 
-argsDescription = Args
-                    { onlyPaths = False &=
-                                  explicit &=
-                                  name "l" &=
-                                  help
-                                    "Do not print reformatted sources or hints to standard output. If a file's formatting is different from hfmt's or has unimplemented hints, print its name to standard output."
-                    , shouldReplace = False &=
-                                      explicit &=
-                                      name "w" &=
-                                      help
-                                        "Do not print reformatted sources to standard output. If a file's formatting is different from hfmt's, overwrite it with hfmt's version."
-                    , paths = [] &= typ "path ..." &= args
-                    }
-                  &= summary "Hfmt 0.0.1.0 - A formatter for Haskell programs"
-                  &= program "hfmt"
-                  &= details
-                       [ "Given a file, it operates on that file. By default, hfmt prints the diffs of the reformatted sources and hints to standard output."
-                       ]
+type Result = Either String CheckResult
+
+data Options =
+       Options
+         { optPrintDiffs     :: Bool
+         , optPrintFilePaths :: Bool
+         , optWriteSources   :: Bool
+         , optPaths          :: [FilePath]
+         }
+
+optAction :: Options -> Action
+optAction options
+  | optPrintDiffs options = PrintDiffs
+  | optPrintFilePaths options = PrintFilePaths
+  | optWriteSources options = WriteSources
+  | optPaths options == ["-"] = PrintSources
+  | otherwise = PrintDiffs
+
+optionParser :: Parser Options
+optionParser = Options <$> switch
+                             (long "print-diffs" <>
+                              short 'd' <>
+                              help "If a file's formatting is different, print a diff.")
+                       <*> switch
+                             (long "print-paths" <>
+                              short 'l' <>
+                              help "If a file's formatting is different, print its path.")
+                       <*> switch
+                             (long "write-sources" <>
+                              short 'w' <>
+                              help "If a file's formatting is different, overwrite it.")
+                       <*> many pathOption
+  where
+    pathOption = strOption (metavar "PATH" <> pathOptionHelp)
+    pathOptionHelp = helpDoc $ Just $
+      paragraph "Explicit paths to process." <> hardline
+      <> unorderdedList " - "
+           [ paragraph "A single '-' will process standard input."
+           , paragraph "Files will be processed directly."
+           , paragraph "Directories will be recursively searched for source files to process."
+           , paragraph
+               ".cabal files will be parsed and all specified source directories and files processed."
+           , paragraph
+               "If no paths are given, the current directory will be searched for .cabal files to process, if none are found the currend directory will be recursively searched for source files to process."
+           ]
+
+paragraph :: String -> Doc
+paragraph = mconcat . intersperse softline . map text . words
+
+unorderdedList :: String -> [Doc] -> Doc
+unorderdedList prefix = encloseSep (text prefix) mempty (text prefix) . map (hang 0)
+
+optionParserInfo :: ParserInfo Options
+optionParserInfo = info (helper <*> optionParser)
+                     (fullDesc
+                      <> header "hfmt - formats Haskell programs"
+                      <> progDesc
+                           "Operates on Haskell source files, reformatting them by applying suggestions from hlint, hindent, and stylish-haskell. Inspired by the gofmt utility.")
 
 main :: IO ()
 main = do
-  args <- cmdArgs argsDescription
+  options <- execParser optionParserInfo
   settings <- autoSettings
-  run args settings
+  run options settings
 
-run :: Args -> Settings -> IO ()
-run args settings = run' (paths args)
+run :: Options -> Settings -> IO ()
+run options settings = processAll (optPaths options)
   where
-    run' [] = run'' "."
-    run' paths = mapM_ run'' paths
-    run'' path = checkPath settings path >>= mapM_ process
-    process result =
-      if shouldReplace args
-        then replace result
-        else printResult (onlyPaths args) result
-
-printResult :: Bool -> Either String CheckResult -> IO ()
-printResult True = printPath
-printResult False = printContents
-
-printPath :: Either String CheckResult -> IO ()
-printPath (Left err) = print err
-printPath (Right r@(CheckResult mPath _ _)) = when (wasReformatted r) $ putStrLn (fromJust mPath)
-
-printContents :: Either String CheckResult -> IO ()
-printContents (Left err) = print err
-printContents (Right r) = when (wasReformatted r) $ print r
-
-replace :: Either String CheckResult -> IO ()
-replace (Left err) = return ()
-replace (Right r@(CheckResult mPath _ _)) = writeFile (fromJust mPath) (formattedResult r)
+    processAll [] = process "."
+    processAll paths = mapM_ process paths
+    process path = checkPath settings path >>= mapM_ (takeAction (optAction options))
+    takeAction :: Action -> Result -> IO ()
+    takeAction action = either print (takeAction' action)
+    takeAction' action r = when (wasReformatted r) $ takeAction'' action r
+    takeAction'' PrintDiffs = putStr . showDiff
+    takeAction'' PrintSources = putStr . showSource
+    takeAction'' PrintFilePaths = putStrLn . fromJust . checkedPath
+    takeAction'' WriteSources = \r -> writeFile (fromJust (checkedPath r)) (formattedResult r)

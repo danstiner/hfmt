@@ -35,6 +35,7 @@ library
                      , HUnit
                      , stylish-haskell
                      , text
+                     , pretty
 
 executable hfmt
   Hs-Source-Dirs:    app
@@ -42,7 +43,8 @@ executable hfmt
   GHC-Options:       -Wall
   Build-Depends:     base == 4.*
                    , hfmt
-                   , cmdargs
+                   , ansi-wl-pprint
+                   , optparse-applicative
 
 test-suite hfmt-self-formatting-test
   Type:              exitcode-stdio-1.0
