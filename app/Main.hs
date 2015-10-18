@@ -4,10 +4,11 @@ import Control.Applicative
 import Control.Monad
 import Data.List
 import Data.Maybe
+import Data.Monoid
 import Options.Applicative.Builder
 import Options.Applicative.Common
 import Options.Applicative.Extra
-import Text.PrettyPrint.ANSI.Leijen hiding ((<$>), (<>))
+import Text.PrettyPrint.ANSI.Leijen hiding (empty, (<$>), (<>))
 
 data Action = PrintDiffs
             | PrintSources
@@ -45,10 +46,10 @@ optionParser = Options <$> switch
                              (long "write-sources" <>
                               short 'w' <>
                               help "If a file's formatting is different, overwrite it.")
-                       <*> many
+                       <*> many pathOption
   where
     pathOption = strOption (metavar "PATH" <> pathOptionHelp)
-    pathOptionHelp = helpDoc Just $
+    pathOptionHelp = helpDoc $ Just $
       paragraph "Explicit paths to process." <> hardline
       <> unorderdedList " - "
            [ paragraph "A single '-' will process standard input."
@@ -87,7 +88,7 @@ run options settings = processAll (optPaths options)
     process path = checkPath settings path >>= mapM_ (takeAction (optAction options))
     takeAction :: Action -> Result -> IO ()
     takeAction action = either print (takeAction' action)
-    takeAction' r = when (wasReformatted r) $ takeAction'' r
+    takeAction' action r = when (wasReformatted r) $ takeAction'' action r
     takeAction'' PrintDiffs = putStr . showDiff
     takeAction'' PrintSources = putStr . showSource
     takeAction'' PrintFilePaths = putStrLn . fromJust . checkedPath
