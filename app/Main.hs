@@ -48,7 +48,7 @@ optionParser = Options <$> switch
                               help "If a file's formatting is different, overwrite it.")
                        <*> many pathOption
   where
-    pathOption = strOption (metavar "PATH" <> pathOptionHelp)
+    pathOption = strArgument (metavar "PATH" <> pathOptionHelp)
     pathOptionHelp = helpDoc $ Just $
       paragraph "Explicit paths to process." <> hardline
       <> unorderdedList " - "
