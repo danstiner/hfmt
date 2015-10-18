@@ -45,7 +45,7 @@ instance Show CheckResult where
 showDiff :: CheckResult -> String
 showDiff (CheckResult mPath ideas formatted) =
   fromMaybe "<unknown file>" mPath ++
-  "\n" ++
+  ":\n" ++
   concatMap show ideas ++
   "\nDiff:\n" ++
   Stylish.showDiff formatted
@@ -53,7 +53,7 @@ showDiff (CheckResult mPath ideas formatted) =
 showSource :: CheckResult -> String
 showSource (CheckResult mPath ideas (FormatResult _ formatted)) =
   fromMaybe "<unknown file>" mPath ++
-  "\n" ++
+  ":\n" ++
   concatMap show ideas ++
   "\n" ++
   formatted
