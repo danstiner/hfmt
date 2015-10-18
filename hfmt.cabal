@@ -1,7 +1,7 @@
 name:                hfmt
 version:             0.0.1.0
-synopsis:            Hfmt formats Haskell programs.
-description:         Inspired by gofmt. Built using hlint and stylish-haskell.
+synopsis:            Haskell source code formatter
+description:         Inspired by gofmt. Built using hlint, hindent, and stylish-haskell.
 license:             MIT
 license-file:        LICENSE
 author:              Daniel Stiner
@@ -50,12 +50,9 @@ test-suite hfmt-self-formatting-test
   Main-Is:           Spec.hs
   Build-Depends:     base == 4.*
                      , hfmt
-
                      , HUnit
-                     , QuickCheck >= 2.7
                      , test-framework
                      , test-framework-hunit
-                     , test-framework-quickcheck2
 
 source-repository head
   type: git

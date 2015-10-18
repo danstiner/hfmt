@@ -8,4 +8,6 @@ import Test.HUnit                          hiding (Test)
 
 main :: IO ()
 main = defaultMain
-         [testGroup "Check source formatting" (hUnitTestToTests $ Hfmt.hunitPackage "hfmt.cabal")]
+         [ testGroup "Check formatting of package sources"
+             (hUnitTestToTests $ Hfmt.hunitPackage "hfmt.cabal")
+         ]
