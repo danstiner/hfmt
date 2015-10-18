@@ -8,6 +8,8 @@ module Language.Haskell.Format (
     formattedResult,
     Settings,
     wasReformatted,
+    showDiff,
+    showSource,
     ) where
 
 import           Control.Applicative
@@ -37,12 +39,23 @@ data Settings =
 data CheckResult = CheckResult (Maybe FilePath) [Idea] FormatResult
 
 instance Show CheckResult where
-  show (CheckResult mPath ideas formatted) =
-    fromMaybe "<unknown file>" mPath ++
-    "\n" ++
-    concatMap show ideas ++
-    "\nDiff:" ++
-    Stylish.showDiff formatted
+  show = showDiff
+
+showDiff :: CheckResult -> String
+showDiff (CheckResult mPath ideas formatted) =
+  fromMaybe "<unknown file>" mPath ++
+  "\n" ++
+  concatMap show ideas ++
+  "\nDiff:" ++
+  Stylish.showDiff formatted
+
+showSource :: CheckResult -> String
+showSource (CheckResult mPath ideas (FormatResult _ formatted)) =
+  fromMaybe "<unknown file>" mPath ++
+  "\n" ++
+  concatMap show ideas ++
+  "\n" ++
+  formatted
 
 autoSettings :: IO Settings
 autoSettings = Settings <$> HLint.autoSettings <*> Stylish.autoSettings <*> HIndent.autoSettings
