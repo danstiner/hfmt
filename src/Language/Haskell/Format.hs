@@ -10,6 +10,7 @@ module Language.Haskell.Format (
     wasReformatted,
     showDiff,
     showSource,
+    checkedPath,
     ) where
 
 import           Control.Applicative
@@ -137,6 +138,9 @@ check settings path contents = do
 wasReformatted :: CheckResult -> Bool
 wasReformatted (CheckResult _ ideas (FormatResult before after)) =
   not (null ideas) || before /= after
+
+checkedPath :: CheckResult -> Maybe FilePath
+checkedPath (CheckResult mPath _ _) = mPath
 
 formattedResult :: CheckResult -> String
 formattedResult (CheckResult _ _ (FormatResult _ after)) = after

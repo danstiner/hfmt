@@ -86,23 +86,9 @@ run options settings = processAll (optPaths options)
     processAll paths = mapM_ process paths
     process path = checkPath settings path >>= mapM_ (takeAction (optAction options))
     takeAction :: Action -> Result -> IO ()
-    takeAction PrintDiffs = printDiff
-    takeAction PrintSources = printSource
-    takeAction PrintFilePaths = printPath
-    takeAction WriteSources = replace
-
-printPath :: Result -> IO ()
-printPath (Left err) = print err
-printPath (Right r@(CheckResult mPath _ _)) = when (wasReformatted r) $ putStrLn (fromJust mPath)
-
-printSource :: Result -> IO ()
-printSource (Left err) = print err
-printSource (Right r) = when (wasReformatted r) $ putStr (showSource r)
-
-printDiff :: Result -> IO ()
-printDiff (Left err) = print err
-printDiff (Right r) = when (wasReformatted r) $ putStr (showDiff r)
-
-replace :: Result -> IO ()
-replace (Left err) = print err
-replace (Right r@(CheckResult mPath _ _)) = writeFile (fromJust mPath) (formattedResult r)
+    takeAction action = either print (takeAction' action)
+    takeAction' r = when (wasReformatted r) $ takeAction'' r
+    takeAction'' PrintDiffs = putStr . showDiff
+    takeAction'' PrintSources = putStr . showSource
+    takeAction'' PrintFilePaths = putStrLn . fromJust . checkedPath
+    takeAction'' WriteSources = \r -> writeFile (fromJust (checkedPath r)) (formattedResult r)
