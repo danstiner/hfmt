@@ -46,9 +46,19 @@ executable hfmt
                    , ansi-wl-pprint
                    , optparse-applicative
 
-test-suite hfmt-self-formatting-test
+test-suite self-formatting-test
   Type:              exitcode-stdio-1.0
   Hs-Source-Dirs:    test/self-formatting
+  Main-Is:           Spec.hs
+  Build-Depends:     base == 4.*
+                     , hfmt
+                     , HUnit
+                     , test-framework
+                     , test-framework-hunit
+
+test-suite pure-test
+  Type:              exitcode-stdio-1.0
+  Hs-Source-Dirs:    test/pure
   Main-Is:           Spec.hs
   Build-Depends:     base == 4.*
                      , hfmt
