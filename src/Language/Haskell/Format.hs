@@ -44,19 +44,15 @@ instance Show CheckResult where
 
 showDiff :: CheckResult -> String
 showDiff (CheckResult mPath ideas formatted) =
-  fromMaybe "<unknown file>" mPath ++
-  ":\n" ++
+  fromMaybe "<unknown file>" mPath ++ ":\n" ++
   concatMap show ideas ++
-  "\nDiff:\n" ++
   Stylish.showDiff formatted
 
 showSource :: CheckResult -> String
 showSource (CheckResult mPath ideas (FormatResult _ formatted)) =
-  fromMaybe "<unknown file>" mPath ++
-  ":\n" ++
+  fromMaybe "<unknown file>" mPath ++ ":\n" ++
   concatMap show ideas ++
-  "\n" ++
-  formatted
+  "\n" ++ formatted
 
 autoSettings :: IO Settings
 autoSettings = Settings <$> HLint.autoSettings <*> Stylish.autoSettings <*> HIndent.autoSettings
