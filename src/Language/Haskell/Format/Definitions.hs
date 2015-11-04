@@ -6,6 +6,7 @@ module Language.Haskell.Format.Definitions (
     Suggestion(..),
     ) where
 
+import Control.Applicative
 import Control.Monad
 import Data.Monoid
 
