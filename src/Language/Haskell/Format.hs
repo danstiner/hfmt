@@ -32,5 +32,5 @@ stylish _ = Stylish.formatter <$> Stylish.autoSettings
 formatters :: Settings -> IO [Formatter]
 formatters s = sequence [hlint s, hindent s, stylish s]
 
-format :: HaskellSource -> Formatter -> Either String Reformatted
-format source (Formatter f) = f source
+format :: Formatter -> HaskellSource -> Either String Reformatted
+format = unFormatter

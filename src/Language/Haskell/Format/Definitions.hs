@@ -30,7 +30,7 @@ instance Monoid Reformatted where
   (Reformatted _ suggestionsA) `mappend` (Reformatted sourceB suggestionsB) = Reformatted sourceB
                                                                                 (suggestionsA <> suggestionsB)
 
-data Formatter = Formatter { formatterFormat :: HaskellSource -> Either ErrorString Reformatted }
+data Formatter = Formatter { unFormatter :: HaskellSource -> Either ErrorString Reformatted }
 
 instance Monoid Formatter where
   mempty = Formatter (\source -> Right (Reformatted source []))
