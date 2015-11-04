@@ -3,6 +3,7 @@ module Language.Haskell.Format.HLint (autoSettings, formatter, suggester) where
 import Language.Haskell.Format.Definitions
 import Language.Haskell.Format.Internal
 
+import Control.Applicative
 import Data.Maybe
 import Language.Haskell.Exts.Annotated     as Hse
 import Language.Haskell.HLint3             hiding (autoSettings)
