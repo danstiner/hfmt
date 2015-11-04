@@ -1,27 +1,40 @@
-module Language.Haskell.Format.HLint (autoSettings, check, Settings) where
+module Language.Haskell.Format.HLint (autoSettings, formatter, suggester) where
 
-import           Data.Maybe
+import Language.Haskell.Format.Definitions
+import Language.Haskell.Format.Internal
 
-import           Language.Haskell.HLint3 (Classify, Hint, Idea, ParseFlags)
-import qualified Language.Haskell.HLint3 as HLint
+import Data.Maybe
+import Language.Haskell.Exts.Annotated     as Hse
+import Language.Haskell.HLint3             hiding (autoSettings)
 
-data Settings = Settings ParseFlags [Classify] Hint
+type Settings = (ParseMode, [Classify], Hint)
 
-autoSettings :: IO Settings
-autoSettings = do
-  (parseFlags, classifications, hint) <- HLint.autoSettings
-  return (Settings parseFlags classifications hint)
+formatter = undefined
 
-check :: Settings -> Maybe FilePath -> String -> IO (Either String [Idea])
-check settings mPath contents = do
-  parsed <- HLint.parseModuleEx parseFlags (fromMaybe "" mPath) (Just contents)
-  return $
-    case parsed of
-      Left parseError   -> Left (showParseError parseError)
-      Right parseResult -> Right $ HLint.applyHints classifications hint [parseResult]
+suggester :: (ParseMode, [Classify], Hint) -> Formatter
+suggester = mkSuggester . hlint
 
+hlint :: (ParseMode, [Classify], Hint) -> HaskellSource -> Either String [Suggestion]
+hlint (parseMode, classifications, hint) (HaskellSource source) =
+  getSuggestions <$> parseResultAsEither (parse source)
   where
-    Settings parseFlags classifications hint = settings
+    parse = Hse.parseFileContentsWithComments parseMode
+    getSuggestions moduleSource = map ideaToSuggestion $ applyHints classifications hint
+                                                           [moduleSource]
 
-showParseError :: HLint.ParseError -> String
-showParseError = HLint.parseErrorMessage
+autoSettings :: IO (ParseMode, [Classify], Hint)
+autoSettings = do
+  (fixities, classify, hints) <- findSettings (readSettingsFile Nothing) Nothing
+  return (hseFlags (parseFlagsAddFixities fixities defaultParseFlags), classify, resolveHints hints)
+
+parseResultAsEither :: ParseResult a -> Either String a
+parseResultAsEither (ParseOk a) = Right a
+parseResultAsEither (ParseFailed loc error) =
+  Left ("Parse failed at " ++ location ++ ": " ++ error)
+  where
+    location = filename ++ " " ++ linecol
+    filename = "[" ++ srcFilename loc ++ "]"
+    linecol = "(" ++ show (srcLine loc) ++ ":" ++ show (srcColumn loc) ++ ")"
+
+ideaToSuggestion :: Idea -> Suggestion
+ideaToSuggestion = Suggestion . show

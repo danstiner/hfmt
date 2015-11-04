@@ -1,4 +1,4 @@
-module Language.Haskell.Format.Stylish (autoSettings, check, Settings, showDiff) where
+module Language.Haskell.Format.Stylish (autoSettings, formatter) where
 
 import Control.Applicative
 import Data.Algorithm.Diff
@@ -8,22 +8,21 @@ import Language.Haskell.Stylish            as Stylish
 import Text.PrettyPrint
 
 import Language.Haskell.Format.Definitions
+import Language.Haskell.Format.Internal
 
 data Settings = Settings Stylish.Config
 
 autoSettings :: IO Settings
 autoSettings = Settings <$> Stylish.loadConfig (Stylish.makeVerbose False) Nothing
 
-check :: Settings -> Maybe FilePath -> String -> IO (Either String FormatResult)
-check settings path contents =
-  case runResult of
-    Left err             -> return $ Left err
-    Right formattedLines -> ret formattedLines
+formatter :: Settings -> Formatter
+formatter = mkFormatter . stylish
+
+stylish :: Settings -> HaskellSource -> Either String HaskellSource
+stylish (Settings config) (HaskellSource source) =
+  HaskellSource . unlines <$> Stylish.runSteps extensions Nothing steps sourceLines
   where
-    runResult = Stylish.runSteps extensions path steps (lines contents)
-    ret :: [String] -> IO (Either String FormatResult)
-    ret = return . Right . FormatResult contents . unlines
-    (Settings config) = settings
+    sourceLines = lines source
     extensions = Stylish.configLanguageExtensions config
     steps = Stylish.configSteps config
 

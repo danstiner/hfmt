@@ -17,34 +17,40 @@ tested-with:         GHC==7.8.4, GHC==7.10.2, GHC == 7.11.*
 library
   Hs-Source-Dirs:    src
   Exposed-Modules:   Language.Haskell.Format
+                     , Language.Haskell.Format.Utilities
+                     , Language.Haskell.Source.Enumerator
                      , Language.Haskell.Format.Definitions
+  Other-Modules:     Language.Haskell.Format.Internal
                      , Language.Haskell.Format.HIndent
                      , Language.Haskell.Format.HLint
                      , Language.Haskell.Format.Stylish
-                     , Language.Haskell.Format.TestHelpers
   GHC-Options:       -Wall
   Build-Depends:     base == 4.*
                      , Cabal
                      , Diff
                      , directory
                      , filepath
-                     , Glob
                      , haskell-src-exts
                      , hindent >= 4.5
                      , hlint >= 1.9.13 , hlint < 2
                      , HUnit
+                     , pipes
+                     , pretty
                      , stylish-haskell
                      , text
-                     , pretty
 
 executable hfmt
   Hs-Source-Dirs:    app
   Main-Is:           Main.hs
+  Other-Modules:     OptionsParser
   GHC-Options:       -Wall
   Build-Depends:     base == 4.*
                    , hfmt
                    , ansi-wl-pprint
+                   , Diff
                    , optparse-applicative
+                   , pipes
+                   , pretty
 
 test-suite self-formatting-test
   Type:              exitcode-stdio-1.0

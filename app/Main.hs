@@ -1,101 +1,53 @@
-import Language.Haskell.Format
+module Main (main) where
 
-import Control.Applicative
-import Control.Monad
-import Data.List
-import Data.Maybe
-import Data.Monoid
-import Options.Applicative.Builder
-import Options.Applicative.Common
-import Options.Applicative.Extra
-import Text.PrettyPrint.ANSI.Leijen hiding (empty, (<$>), (<>))
+import           Actions
+import           OptionsParser                       as Options
+import           Types
 
-data Action = PrintDiffs
-            | PrintSources
-            | PrintFilePaths
-            | WriteSources
+import           Language.Haskell.Format
+import           Language.Haskell.Format.Definitions
+import           Language.Haskell.Format.Utilities   hiding (wasReformatted)
+import           Language.Haskell.Source.Enumerator
 
-type Result = Either String CheckResult
-
-data Options =
-       Options
-         { optPrintDiffs     :: Bool
-         , optPrintSources   :: Bool
-         , optPrintFilePaths :: Bool
-         , optWriteSources   :: Bool
-         , optPaths          :: [FilePath]
-         }
-
-optAction :: Options -> Action
-optAction options
-  | optPrintDiffs options = PrintDiffs
-  | optPrintFilePaths options = PrintFilePaths
-  | optPrintSources options = PrintSources
-  | optWriteSources options = WriteSources
-  | optPaths options == ["-"] = PrintSources
-  | otherwise = PrintDiffs
-
-optionParser :: Parser Options
-optionParser = Options <$> switch
-                             (long "print-diffs" <>
-                              short 'd' <>
-                              help "If a file's formatting is different, print a diff.")
-                       <*> switch
-                             (long "print-sources" <>
-                              short 's' <>
-                              help "If a file's formatting is different, print its source.")
-                       <*> switch
-                             (long "print-paths" <>
-                              short 'l' <>
-                              help "If a file's formatting is different, print its path.")
-                       <*> switch
-                             (long "write-sources" <>
-                              short 'w' <>
-                              help "If a file's formatting is different, overwrite it.")
-                       <*> many pathOption
-  where
-    pathOption = strArgument (metavar "PATH" <> pathOptionHelp)
-    pathOptionHelp = helpDoc $ Just $
-      paragraph "Explicit paths to process." <> hardline
-      <> unorderdedList " - "
-           [ paragraph "A single '-' will process standard input."
-           , paragraph "Files will be processed directly."
-           , paragraph "Directories will be recursively searched for source files to process."
-           , paragraph
-               ".cabal files will be parsed and all specified source directories and files processed."
-           , paragraph
-               "If no paths are given, the current directory will be searched for .cabal files to process, if none are found the currend directory will be recursively searched for source files to process."
-           ]
-
-paragraph :: String -> Doc
-paragraph = mconcat . intersperse softline . map text . words
-
-unorderdedList :: String -> [Doc] -> Doc
-unorderdedList prefix = encloseSep (text prefix) mempty (text prefix) . map (hang 0)
-
-optionParserInfo :: ParserInfo Options
-optionParserInfo = info (helper <*> optionParser)
-                     (fullDesc
-                      <> header "hfmt - formats Haskell programs"
-                      <> progDesc
-                           "Operates on Haskell source files, reformatting them by applying suggestions from hlint, hindent, and stylish-haskell. Inspired by the gofmt utility.")
+import           Control.Applicative
+import           Control.Monad
+import           Data.List
+import           Data.Maybe
+import           Data.Monoid
+import           Options.Applicative.Extra           as OptApp
+import           Pipes
+import qualified Pipes.Prelude                       as P
 
 main :: IO ()
 main = do
-  options <- execParser optionParserInfo
-  settings <- autoSettings
-  run options settings
+  options <- execParser Options.parser
+  formatter <- defaultFormatter
+  runEffect $ inputFiles options >-> P.map (reformat formatter) >-> P.mapM_ (Actions.act options)
 
-run :: Options -> Settings -> IO ()
-run options settings = processAll (optPaths options)
+inputFiles :: Options -> Producer InputFileWithSource IO ()
+inputFiles options = determineInputFilePaths (optPaths options) >-> P.mapM readInputFile
   where
-    processAll [] = process "."
-    processAll paths = mapM_ process paths
-    process path = checkPath settings path >>= mapM_ (takeAction (optAction options))
-    takeAction :: Action -> Result -> IO ()
-    takeAction action = either print (takeAction' action)
-    takeAction' action r = when (wasReformatted r) $ takeAction'' action r
-    takeAction'' PrintDiffs = putStr . showDiff
-    takeAction'' PrintSources = putStr . showSource
-    takeAction'' PrintFilePaths = putStrLn . fromJust . checkedPath
-    takeAction'' WriteSources = \r -> writeFile (fromJust (checkedPath r)) (formattedResult r)
+    determineInputFilePaths :: [FilePath] -> Producer InputFile IO ()
+    determineInputFilePaths [] = enumeratePath "." >-> P.map InputFilePath
+    determineInputFilePaths ["-"] = yield InputFromStdIn
+    determineInputFilePaths paths = enumeratePaths paths >-> P.map InputFilePath
+
+    readInputFile :: InputFile -> IO InputFileWithSource
+    readInputFile (InputFilePath path) = InputFileWithSource (InputFilePath path) <$> readSource
+                                                                                        path
+    readInputFile (InputFromStdIn) = InputFileWithSource InputFromStdIn <$> readStdin
+
+    enumeratePaths :: [FilePath] -> Producer HaskellSourceFilePath IO ()
+    enumeratePaths paths = for (each paths) enumeratePath
+
+reformat :: Formatter -> InputFileWithSource -> ReformatResult
+reformat (Formatter format) (InputFileWithSource input source) =
+  case format source of
+    Left error        -> InvalidReformat input error
+    Right reformatted -> Reformat input source reformatted
+
+readSource :: HaskellSourceFilePath -> IO HaskellSource
+readSource path = HaskellSource <$> readFile path
+
+readStdin :: IO HaskellSource
+readStdin = HaskellSource <$> getContents
