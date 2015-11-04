@@ -2,8 +2,14 @@ module Language.Haskell.Format (
     autoSettings,
     format,
     formatters,
+    hlint,
+    hindent,
+    stylish,
     Settings,
     Formatter(..),
+    Suggestion(..),
+    HaskellSource(..),
+    Reformatted(..),
     ) where
 
 import           Language.Haskell.Format.Definitions

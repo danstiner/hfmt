@@ -1,22 +1,20 @@
 module Main (main) where
 
 import           Actions
-import           OptionsParser                       as Options
-import           Types
-
 import           Language.Haskell.Format
-import           Language.Haskell.Format.Definitions
-import           Language.Haskell.Format.Utilities   hiding (wasReformatted)
+import           Language.Haskell.Format.Utilities  hiding (wasReformatted)
 import           Language.Haskell.Source.Enumerator
+import           OptionsParser                      as Options
+import           Types
 
 import           Control.Applicative
 import           Control.Monad
 import           Data.List
 import           Data.Maybe
 import           Data.Monoid
-import           Options.Applicative.Extra           as OptApp
+import           Options.Applicative.Extra          as OptApp
 import           Pipes
-import qualified Pipes.Prelude                       as P
+import qualified Pipes.Prelude                      as P
 
 main :: IO ()
 main = do

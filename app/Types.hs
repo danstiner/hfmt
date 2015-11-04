@@ -8,8 +8,8 @@ module Types (
     HaskellSource(..),
     ) where
 
-import Language.Haskell.Format.Definitions
-import Language.Haskell.Source.Enumerator  (HaskellSourceFilePath)
+import Language.Haskell.Format
+import Language.Haskell.Source.Enumerator (HaskellSourceFilePath)
 
 data Action = PrintDiffs
             | PrintSources
