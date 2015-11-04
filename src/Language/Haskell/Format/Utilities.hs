@@ -11,7 +11,9 @@ import           Language.Haskell.Format
 import           Language.Haskell.Format.Definitions
 import           Language.Haskell.Source.Enumerator
 
+import           Control.Applicative
 import           Control.Monad
+import           Data.Monoid
 import           Pipes
 import qualified Pipes.Prelude                       as P
 import           Test.HUnit
