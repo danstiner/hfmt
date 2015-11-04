@@ -42,7 +42,9 @@ library
 executable hfmt
   Hs-Source-Dirs:    app
   Main-Is:           Main.hs
-  Other-Modules:     OptionsParser
+  Other-Modules:     Actions
+                   , OptionsParser
+                   , Types
   GHC-Options:       -Wall
   Build-Depends:     base == 4.*
                    , hfmt
