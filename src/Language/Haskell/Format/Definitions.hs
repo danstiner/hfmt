@@ -1,19 +1,10 @@
-module Language.Haskell.Format.Definitions (
-    FormatResult(..),
-    HaskellSource(..),
-    Reformatted(..),
-    Formatter(..),
-    Suggestion(..),
-    ) where
+module Language.Haskell.Format.Definitions (HaskellSource(..), Reformatted(..), Formatter(..), Suggestion(..)) where
 
 import Control.Applicative
 import Control.Monad
 import Data.Monoid
 
 type ErrorString = String
-
-data FormatResult = FormatResult String String
-  deriving Show
 
 newtype HaskellSource = HaskellSource String
   deriving Eq
