@@ -1,11 +1,4 @@
-module Language.Haskell.Format.Utilities (
-    check,
-    fix,
-    CheckResult,
-    wasReformatted,
-    hunitTest,
-    defaultFormatter,
-    ) where
+module Language.Haskell.Format.Utilities (wasReformatted, hunitTest, defaultFormatter) where
 
 import           Language.Haskell.Format
 import           Language.Haskell.Format.Definitions
