@@ -19,7 +19,6 @@ import qualified Language.Haskell.Format.Stylish     as Stylish
 
 import           Control.Applicative
 import           Data.Maybe
-import           Language.Haskell.HLint3             (Idea)
 
 data Settings = Settings
 
