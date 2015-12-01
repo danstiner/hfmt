@@ -20,7 +20,15 @@ main :: IO ()
 main = do
   options <- execParser Options.parser
   formatter <- defaultFormatter
-  runEffect $ inputFiles options >-> P.map (applyFormatter formatter) >-> P.mapM_ (Actions.act options)
+  runFormatter formatter options
+
+runFormatter :: Formatter -> Options -> IO ()
+runFormatter formatter options =
+  runEffect $ inputFiles' >-> P.map reformat >-> P.mapM_ writeOutput
+  where
+    inputFiles' = inputFiles options
+    reformat = applyFormatter formatter
+    writeOutput = Actions.act options
 
 inputFiles :: Options -> Producer InputFileWithSource IO ()
 inputFiles options = determineInputFilePaths (optPaths options) >-> P.mapM readInputFile
