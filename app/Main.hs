@@ -20,7 +20,7 @@ main :: IO ()
 main = do
   options <- execParser Options.parser
   formatter <- defaultFormatter
-  runEffect $ inputFiles options >-> P.map (reformat formatter) >-> P.mapM_ (Actions.act options)
+  runEffect $ inputFiles options >-> P.map (applyFormatter formatter) >-> P.mapM_ (Actions.act options)
 
 inputFiles :: Options -> Producer InputFileWithSource IO ()
 inputFiles options = determineInputFilePaths (optPaths options) >-> P.mapM readInputFile
@@ -34,8 +34,8 @@ readInputFile :: InputFile -> IO InputFileWithSource
 readInputFile (InputFilePath path) = InputFileWithSource (InputFilePath path) <$> readSource path
 readInputFile (InputFromStdIn) = InputFileWithSource InputFromStdIn <$> readStdin
 
-reformat :: Formatter -> InputFileWithSource -> ReformatResult
-reformat (Formatter format) (InputFileWithSource input source) =
+applyFormatter :: Formatter -> InputFileWithSource -> ReformatResult
+applyFormatter (Formatter format) (InputFileWithSource input source) =
   case format source of
     Left error        -> InvalidReformat input error
     Right reformatted -> Reformat input source reformatted
