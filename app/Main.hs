@@ -15,23 +15,27 @@ import           Data.Monoid
 import           Options.Applicative.Extra          as OptApp
 import           Pipes
 import qualified Pipes.Prelude                      as P
+import           System.Exit
 
 main :: IO ()
 main = do
   options <- execParser Options.parser
   formatter <- defaultFormatter
-  runFormatter formatter options
+  reformatNeeded <- runFormatter formatter options
+  if reformatNeeded
+    then exitFailure
+    else exitSuccess
 
-runFormatter :: Formatter -> Options -> IO ()
+runFormatter :: Formatter -> Options -> IO Bool
 runFormatter formatter options =
-  runEffect $ inputFiles' >-> P.map reformat >-> P.mapM_ writeOutput
+  P.any sourceChangedOrHasSuggestions (inputFiles >-> P.map reformat >-> P.chain writeOutput)
   where
-    inputFiles' = inputFiles options
+    inputFiles = readInputFiles options
     reformat = applyFormatter formatter
     writeOutput = Actions.act options
 
-inputFiles :: Options -> Producer InputFileWithSource IO ()
-inputFiles options = determineInputFilePaths (optPaths options) >-> P.mapM readInputFile
+readInputFiles :: Options -> Producer InputFileWithSource IO ()
+readInputFiles options = determineInputFilePaths (optPaths options) >-> P.mapM readInputFile
 
 determineInputFilePaths :: [FilePath] -> Producer InputFile IO ()
 determineInputFilePaths [] = enumeratePath "." >-> P.map InputFilePath
@@ -53,3 +57,7 @@ readSource path = HaskellSource <$> readFile path
 
 readStdin :: IO HaskellSource
 readStdin = HaskellSource <$> getContents
+
+sourceChangedOrHasSuggestions :: ReformatResult -> Bool
+sourceChangedOrHasSuggestions (Reformat input source reformatted) =
+  not (null (suggestions reformatted)) || source /= reformattedSource reformatted
