@@ -10,15 +10,18 @@ import Data.Algorithm.DiffContext
 import Data.Algorithm.DiffOutput
 import Text.PrettyPrint
 
-act :: Options -> ReformatResult -> IO ()
-act options (InvalidReformat input errorString) =
+act :: Options -> ReformatResult -> IO ReformatResult
+act options r@(InvalidReformat input errorString) = do
   putStrLn ("Error reformatting " ++ show input ++ ": " ++ errorString)
-act options (Reformat input source result) = act' (optAction options)
+  return r
+act options r@(Reformat input source result) = act' (optAction options)
   where
-    act' PrintDiffs = when wasReformatted (printDiff input source result)
+    act' PrintDiffs = when wasReformatted (printDiff input source result) >> return r
     act' PrintSources = undefined
-    act' PrintFilePaths = when wasReformatted (print input)
-    act' WriteSources = when wasReformatted (writeSource input (reformattedSource result))
+    act' PrintFilePaths = when wasReformatted (print input) >> return r
+    act' WriteSources = do
+      when wasReformatted (writeSource input (reformattedSource result))
+      return (Reformat input (reformattedSource result) result)
     wasReformatted = sourceChangedOrHasSuggestions source result
 
 sourceChangedOrHasSuggestions :: HaskellSource -> Reformatted -> Bool

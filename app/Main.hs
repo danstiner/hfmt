@@ -28,7 +28,7 @@ main = do
 
 runFormatter :: Formatter -> Options -> IO Bool
 runFormatter formatter options =
-  P.any sourceChangedOrHasSuggestions (inputFiles >-> P.map reformat >-> P.chain writeOutput)
+  P.any sourceChangedOrHasSuggestions (inputFiles >-> P.map reformat >-> P.mapM writeOutput)
   where
     inputFiles = readInputFiles options
     reformat = applyFormatter formatter
