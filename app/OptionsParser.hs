@@ -69,9 +69,9 @@ unorderdedList prefix = encloseSep (text prefix) mempty (text prefix) . map (han
 optionParserInfo :: ParserInfo Options
 optionParserInfo = info (helper <*> optionParser)
                      (fullDesc
-                      <> header "hfmt - formats Haskell programs"
+                      <> header "hfmt - format Haskell programs"
                       <> progDesc
-                           "Operates on Haskell source files, reformatting them by applying suggestions from hlint, hindent, and stylish-haskell. Inspired by the gofmt utility.")
+                           "Operates on Haskell source files, reformatting them by applying suggestions from HLint, hindent, and stylish-haskell. Inspired by the gofmt utility.")
 
 parser :: ParserInfo Options
 parser = optionParserInfo
