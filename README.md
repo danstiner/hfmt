@@ -43,5 +43,5 @@ Overwrite any files with formatting changes:
                                   source directories and files processed.
                                 - If no paths are given, the current directory will
                                   be searched for .cabal files to process, if none
-                                  are found the currend directory will be
+                                  are found the current directory will be
                                   recursively searched for source files to process.

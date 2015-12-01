@@ -57,7 +57,7 @@ optionParser = Options <$> switch
            , paragraph
                ".cabal files will be parsed and all specified source directories and files processed."
            , paragraph
-               "If no paths are given, the current directory will be searched for .cabal files to process, if none are found the currend directory will be recursively searched for source files to process."
+               "If no paths are given, the current directory will be searched for .cabal files to process, if none are found the current directory will be recursively searched for source files to process."
            ]
 
 paragraph :: String -> Doc
