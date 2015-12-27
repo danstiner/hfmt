@@ -44,7 +44,7 @@ determineInputFilePaths paths = for (each paths) enumeratePath >-> P.map InputFi
 
 readInputFile :: InputFile -> IO InputFileWithSource
 readInputFile (InputFilePath path) = InputFileWithSource (InputFilePath path) <$> readSource path
-readInputFile (InputFromStdIn) = InputFileWithSource InputFromStdIn <$> readStdin
+readInputFile InputFromStdIn = InputFileWithSource InputFromStdIn <$> readStdin
 
 applyFormatter :: Formatter -> InputFileWithSource -> ReformatResult
 applyFormatter (Formatter format) (InputFileWithSource input source) =
