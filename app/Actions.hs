@@ -33,7 +33,7 @@ printDiff (InputFilePath path) source reformatted = do
   putStrLn (path ++ ":")
   mapM_ (putStr . show) (suggestions reformatted)
   putStr (showDiff source (reformattedSource reformatted))
-printDiff (InputFromStdIn) source reformatted = do
+printDiff InputFromStdIn source reformatted = do
   mapM_ (putStr . show) (suggestions reformatted)
   putStr (showDiff source (reformattedSource reformatted))
 
