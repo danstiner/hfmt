@@ -28,8 +28,10 @@ main = do
 
 runFormatter :: Formatter -> Options -> IO Bool
 runFormatter formatter options =
-  P.any sourceChangedOrHasSuggestions (inputFiles >-> P.map reformat >-> P.mapM writeOutput)
+  anyStrict sourceChangedOrHasSuggestions (inputFiles >-> P.map reformat >-> P.mapM writeOutput)
   where
+    anyStrict :: Monad m => (a -> Bool) -> Producer a m () -> m Bool
+    anyStrict f = P.fold (\acc x -> acc || f x) False id
     inputFiles = readInputFiles options
     reformat = applyFormatter formatter
     writeOutput = Actions.act options
