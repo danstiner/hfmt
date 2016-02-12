@@ -1,11 +1,11 @@
 module Language.Haskell.Format.HLint (autoSettings, formatter, suggester) where
 
-import Language.Haskell.Format.Definitions
-import Language.Haskell.Format.Internal
+import           Language.Haskell.Format.Definitions
+import           Language.Haskell.Format.Internal
 
-import Control.Applicative
-import Language.Haskell.Exts.Annotated     as Hse
-import qualified Language.Haskell.HLint3 as HLint3
+import           Control.Applicative
+import           Language.Haskell.Exts.Annotated     as Hse
+import qualified Language.Haskell.HLint3             as HLint3
 
 formatter = undefined
 
@@ -23,7 +23,9 @@ hlint (parseMode, classifications, hint) (HaskellSource source) =
 autoSettings :: IO (ParseMode, [HLint3.Classify], HLint3.Hint)
 autoSettings = do
   (fixities, classify, hints) <- HLint3.findSettings (HLint3.readSettingsFile Nothing) Nothing
-  return (HLint3.hseFlags (HLint3.parseFlagsAddFixities fixities HLint3.defaultParseFlags), classify, HLint3.resolveHints hints)
+  return
+    (HLint3.hseFlags (HLint3.parseFlagsAddFixities fixities HLint3.defaultParseFlags), classify, HLint3.resolveHints
+                                                                                                   hints)
 
 parseResultAsEither :: ParseResult a -> Either String a
 parseResultAsEither (ParseOk a) = Right a
