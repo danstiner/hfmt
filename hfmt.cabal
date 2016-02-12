@@ -28,7 +28,6 @@ library
   GHC-Options:       -Wall
   Build-Depends:     base >= 4.8 && < 5
                      , Cabal
-                     , Diff
                      , directory
                      , filepath
                      , haskell-src-exts
@@ -36,7 +35,6 @@ library
                      , hlint >= 1.9.13 , hlint < 2
                      , HUnit
                      , pipes
-                     , pretty
                      , stylish-haskell
                      , text
 
