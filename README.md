@@ -9,7 +9,7 @@ hfmt is a tool for formatting Haskell programs. Currently it is simply a gofmt s
 
 ## Usage
 
-Check all Haskell source in the current directory:
+Check all Haskell source under the current directory:
 
     hfmt
 
