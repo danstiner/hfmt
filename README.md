@@ -1,4 +1,9 @@
-## hfmt [![Build Status](https://travis-ci.org/danstiner/hfmt.svg?branch=master)](https://travis-ci.org/danstiner/hfmt)
+hfmt
+====
+
+[![Hackage](https://img.shields.io/hackage/v/hfmt.svg)](https://hackage.haskell.org/package/hfmt)
+[![license](https://img.shields.io/github/license/danstiner/hfmt.svg)](https://github.com/danstiner/hfmt/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/danstiner/hfmt.svg?branch=master)](https://travis-ci.org/danstiner/hfmt)
 
 hfmt is a tool for formatting Haskell programs. Currently it is simply a gofmt style wrapper of the excellent tools [hlint](https://github.com/ndmitchell/hlint/blob/master/README.md), [hindent](https://github.com/chrisdone/hindent#readme), and [stylish-haskell](https://github.com/jaspervdj/stylish-haskell#readme).
 
