@@ -31,11 +31,11 @@ library
                      , directory
                      , filepath
                      , haskell-src-exts
-                     , hindent >= 4.5
+                     , hindent >= 4.5 , hindent < 5
                      , hlint >= 1.9.13 , hlint < 2
                      , HUnit
                      , pipes
-                     , stylish-haskell
+                     , stylish-haskell >= 0.5 , stylish-haskell < 0.6
                      , text
 
 executable hfmt
