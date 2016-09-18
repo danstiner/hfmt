@@ -13,7 +13,7 @@ Check all Haskell source under the current directory:
 
     hfmt
 
-Overwrite any files with formatting changes:
+Overwrite files with formatting suggestions:
 
     hfmt -w
 
