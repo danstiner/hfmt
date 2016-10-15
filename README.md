@@ -12,11 +12,11 @@ hfmt is a tool for formatting Haskell programs. Currently it is simply a gofmt s
 
 with [stack](https://www.haskellstack.org/)
 
-    $ cabal install hfmt
+    $ stack install hfmt
 
 with [cabal](https://www.haskell.org/haskellwiki/Cabal/How_to_install_a_Cabal_package)
 
-    $ stack install hfmt
+    $ cabal install hfmt
 
 ## Usage
 
