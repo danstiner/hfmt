@@ -21,7 +21,7 @@ data InputFile = InputFilePath HaskellSourceFilePath
 
 instance Show InputFile where
   show (InputFilePath path) = path
-  show InputFromStdIn = "-"
+  show InputFromStdIn       = "-"
 
 data InputFileWithSource = InputFileWithSource InputFile HaskellSource
 
