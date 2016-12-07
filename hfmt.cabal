@@ -35,7 +35,7 @@ library
                      , hlint >= 1.9.13 , hlint < 2
                      , HUnit
                      , pipes
-                     , stylish-haskell >= 0.6 , stylish-haskell < 0.7
+                     , stylish-haskell >= 0.6 , stylish-haskell < 0.6.2
                      , text
 
 executable hfmt
