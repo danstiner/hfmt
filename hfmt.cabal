@@ -34,13 +34,13 @@ library
                      , exceptions
                      , filepath
                      , haskell-src-exts
-                     , hindent
-                     , hlint
+                     , hindent >= 5.0.0
+                     , hlint >= 1.9
                      , HUnit
                      , path
                      , path-io
                      , pipes
-                     , stylish-haskell
+                     , stylish-haskell >= 0.7
                      , text
                      , yaml
 
