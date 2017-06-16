@@ -1,5 +1,5 @@
 name:                hfmt
-version:             0.0.2.3
+version:             0.1.0
 synopsis:            Haskell source code formatter
 description:         Inspired by gofmt. Built using hlint, hindent, and stylish-haskell.
 license:             MIT
