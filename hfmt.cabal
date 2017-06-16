@@ -42,6 +42,7 @@ library
                      , pipes
                      , stylish-haskell >= 0.7
                      , text
+                     , transformers
                      , yaml
 
 executable hfmt
