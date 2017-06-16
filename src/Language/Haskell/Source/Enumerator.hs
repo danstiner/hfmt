@@ -1,4 +1,7 @@
-module Language.Haskell.Source.Enumerator (enumeratePath, HaskellSourceFilePath) where
+module Language.Haskell.Source.Enumerator
+  ( enumeratePath
+  , HaskellSourceFilePath
+  ) where
 
 import           Control.Applicative
 import           Control.Monad
@@ -63,7 +66,8 @@ directoryOrFile path = do
     else directory path
 
 getDirectoryContentsFullPaths :: FilePath -> IO [FilePath]
-getDirectoryContentsFullPaths path = mkFull . notHidden . notMeta <$> getDirectoryContents path
+getDirectoryContentsFullPaths path =
+  mkFull . notHidden . notMeta <$> getDirectoryContents path
   where
     mkFull = map (path </>)
     notHidden = filter (not . isPrefixOf ".")
@@ -84,8 +88,12 @@ isHaskellSourceFile path = (hasHaskellExtension &&) <$> isFile
 sourcePaths :: GenericPackageDescription -> [FilePath]
 sourcePaths pkg = nub $ concatMap ($ pkg) pathExtractors
   where
-    pathExtractors = [ maybe [] (hsSourceDirs . libBuildInfo . condTreeData) . condLibrary
-                     , concatMap (hsSourceDirs . buildInfo . condTreeData . snd) . condExecutables
-                     , concatMap (hsSourceDirs . testBuildInfo . condTreeData . snd) . condTestSuites
-                     , concatMap (hsSourceDirs . benchmarkBuildInfo . condTreeData . snd) . condBenchmarks
-                     ]
+    pathExtractors =
+      [ maybe [] (hsSourceDirs . libBuildInfo . condTreeData) . condLibrary
+      , concatMap (hsSourceDirs . buildInfo . condTreeData . snd) .
+        condExecutables
+      , concatMap (hsSourceDirs . testBuildInfo . condTreeData . snd) .
+        condTestSuites
+      , concatMap (hsSourceDirs . benchmarkBuildInfo . condTreeData . snd) .
+        condBenchmarks
+      ]

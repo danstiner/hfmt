@@ -1,4 +1,7 @@
-module Language.Haskell.Format.Internal (mkFormatter, mkSuggester) where
+module Language.Haskell.Format.Internal
+  ( mkFormatter
+  , mkSuggester
+  ) where
 
 import Language.Haskell.Format.Definitions
 

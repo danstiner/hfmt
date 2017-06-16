@@ -1,4 +1,7 @@
-module Language.Haskell.Format.HLint (autoSettings, suggester) where
+module Language.Haskell.Format.HLint
+  ( autoSettings
+  , suggester
+  ) where
 
 import           Language.Haskell.Format.Definitions
 import           Language.Haskell.Format.Internal
@@ -14,7 +17,10 @@ import           System.IO.Unsafe                    (unsafePerformIO)
 suggester :: (ParseFlags, [Classify], Hint) -> Formatter
 suggester = mkSuggester . hlint
 
-hlint :: (ParseFlags, [Classify], Hint) -> HaskellSource -> Either String [Suggestion]
+hlint ::
+     (ParseFlags, [Classify], Hint)
+  -> HaskellSource
+  -> Either String [Suggestion]
 hlint (flags, classify, hint) (HaskellSource source) =
   case unsafePerformIO (parseModuleEx flags filepath (Just source)) of
     Right m         -> Right . map ideaToSuggestion . ideas $ m

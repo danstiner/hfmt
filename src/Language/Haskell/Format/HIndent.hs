@@ -1,4 +1,8 @@
-module Language.Haskell.Format.HIndent (autoSettings, formatter, defaultFormatter) where
+module Language.Haskell.Format.HIndent
+  ( autoSettings
+  , formatter
+  , defaultFormatter
+  ) where
 
 import           Control.Applicative
 import           Data.ByteString.Builder
@@ -19,7 +23,9 @@ import qualified Path.IO                             as Path
 import           Language.Haskell.Format.Definitions
 import           Language.Haskell.Format.Internal
 
-data Settings = Settings Config (Maybe [Extension])
+data Settings =
+  Settings Config
+           (Maybe [Extension])
 
 defaultFormatter :: IO Formatter
 defaultFormatter = formatter <$> autoSettings
@@ -35,7 +41,10 @@ getConfig = do
   cur <- Path.getCurrentDir
   homeDir <- Path.getHomeDir
   mfile <-
-    Path.findFileUp cur ((== ".hindent.yaml") . toFilePath . filename) (Just homeDir)
+    Path.findFileUp
+      cur
+      ((== ".hindent.yaml") . toFilePath . filename)
+      (Just homeDir)
   case mfile of
     Nothing -> return defaultConfig
     Just file -> do
@@ -52,4 +61,6 @@ hindent (Settings config extensions) (HaskellSource source) =
   toHaskellSource <$> reformat config extensions Nothing sourceText
   where
     sourceText = Encoding.encodeUtf8 . Text.pack $ source
-    toHaskellSource = HaskellSource . Text.unpack . Encoding.decodeUtf8 . L.toStrict . toLazyByteString
+    toHaskellSource =
+      HaskellSource .
+      Text.unpack . Encoding.decodeUtf8 . L.toStrict . toLazyByteString

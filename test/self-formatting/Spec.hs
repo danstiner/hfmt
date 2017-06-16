@@ -7,7 +7,9 @@ import Test.Framework.Providers.HUnit
 import Test.HUnit                        hiding (Test)
 
 main :: IO ()
-main = defaultMain
-         [ testGroup "Check formatting of package sources"
-             (hUnitTestToTests $ hunitTest "hfmt.cabal")
-         ]
+main =
+  defaultMain
+    [ testGroup
+        "Check formatting of package sources"
+        (hUnitTestToTests $ hunitTest "hfmt.cabal")
+    ]
