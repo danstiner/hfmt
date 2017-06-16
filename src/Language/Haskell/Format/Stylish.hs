@@ -9,7 +9,7 @@ import Language.Haskell.Stylish            as Stylish
 import Language.Haskell.Format.Definitions
 import Language.Haskell.Format.Internal
 
-data Settings =
+newtype Settings =
   Settings Stylish.Config
 
 autoSettings :: IO Settings
