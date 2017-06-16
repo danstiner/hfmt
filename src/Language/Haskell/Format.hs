@@ -1,16 +1,16 @@
-module Language.Haskell.Format (
-    autoSettings,
-    format,
-    formatters,
-    hlint,
-    hindent,
-    stylish,
-    Settings,
-    Formatter(..),
-    Suggestion(..),
-    HaskellSource(..),
-    Reformatted(..),
-    ) where
+module Language.Haskell.Format
+  ( autoSettings
+  , format
+  , formatters
+  , hlint
+  , hindent
+  , stylish
+  , Settings
+  , Formatter(..)
+  , Suggestion(..)
+  , HaskellSource(..)
+  , Reformatted(..)
+  ) where
 
 import           Language.Haskell.Format.Definitions
 import qualified Language.Haskell.Format.HIndent     as HIndent
@@ -20,7 +20,8 @@ import qualified Language.Haskell.Format.Stylish     as Stylish
 import           Control.Applicative
 import           Data.Maybe
 
-data Settings = Settings
+data Settings =
+  Settings
 
 autoSettings :: IO Settings
 autoSettings = return Settings

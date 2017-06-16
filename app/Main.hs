@@ -1,4 +1,6 @@
-module Main (main) where
+module Main
+  ( main
+  ) where
 
 import           Actions
 import           Language.Haskell.Format
@@ -28,7 +30,9 @@ main = do
 
 runFormatter :: Formatter -> Options -> IO Bool
 runFormatter formatter options =
-  anyStrict sourceChangedOrHasSuggestions (inputFiles >-> P.map reformat >-> P.mapM writeOutput)
+  anyStrict
+    sourceChangedOrHasSuggestions
+    (inputFiles >-> P.map reformat >-> P.mapM writeOutput)
   where
     anyStrict :: Monad m => (a -> Bool) -> Producer a m () -> m Bool
     anyStrict f = P.fold (\acc x -> acc || f x) False id
@@ -37,15 +41,18 @@ runFormatter formatter options =
     writeOutput = Actions.act options
 
 readInputFiles :: Options -> Producer InputFileWithSource IO ()
-readInputFiles options = determineInputFilePaths (optPaths options) >-> P.mapM readInputFile
+readInputFiles options =
+  determineInputFilePaths (optPaths options) >-> P.mapM readInputFile
 
 determineInputFilePaths :: [FilePath] -> Producer InputFile IO ()
 determineInputFilePaths [] = enumeratePath "." >-> P.map InputFilePath
 determineInputFilePaths ["-"] = yield InputFromStdIn
-determineInputFilePaths paths = for (each paths) enumeratePath >-> P.map InputFilePath
+determineInputFilePaths paths =
+  for (each paths) enumeratePath >-> P.map InputFilePath
 
 readInputFile :: InputFile -> IO InputFileWithSource
-readInputFile (InputFilePath path) = InputFileWithSource (InputFilePath path) <$> readSource path
+readInputFile (InputFilePath path) =
+  InputFileWithSource (InputFilePath path) <$> readSource path
 readInputFile InputFromStdIn = InputFileWithSource InputFromStdIn <$> readStdin
 
 applyFormatter :: Formatter -> InputFileWithSource -> ReformatResult
@@ -62,4 +69,5 @@ readStdin = HaskellSource <$> getContents
 
 sourceChangedOrHasSuggestions :: ReformatResult -> Bool
 sourceChangedOrHasSuggestions (Reformat input source reformatted) =
-  not (null (suggestions reformatted)) || source /= reformattedSource reformatted
+  not (null (suggestions reformatted)) ||
+  source /= reformattedSource reformatted

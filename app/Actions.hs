@@ -1,4 +1,6 @@
-module Actions (act) where
+module Actions
+  ( act
+  ) where
 
 import Language.Haskell.Format
 import OptionsParser
@@ -16,7 +18,8 @@ act options r@(InvalidReformat input errorString) = do
   return r
 act options r@(Reformat input source result) = act' (optAction options)
   where
-    act' PrintDiffs = when wasReformatted (printDiff input source result) >> return r
+    act' PrintDiffs =
+      when wasReformatted (printDiff input source result) >> return r
     act' PrintSources = undefined
     act' PrintFilePaths = when wasReformatted (print input) >> return r
     act' WriteSources = do
@@ -26,7 +29,8 @@ act options r@(Reformat input source result) = act' (optAction options)
 
 sourceChangedOrHasSuggestions :: HaskellSource -> Reformatted -> Bool
 sourceChangedOrHasSuggestions source reformatted =
-  not (null (suggestions reformatted)) || source /= reformattedSource reformatted
+  not (null (suggestions reformatted)) ||
+  source /= reformattedSource reformatted
 
 printDiff :: InputFile -> HaskellSource -> Reformatted -> IO ()
 printDiff (InputFilePath path) source reformatted = do
