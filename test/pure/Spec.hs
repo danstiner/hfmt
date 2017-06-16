@@ -1,4 +1,6 @@
-module Main where
+module Main
+  ( main
+  ) where
 
 import Test.Framework                 (defaultMain, testGroup)
 import Test.Framework.Providers.HUnit
