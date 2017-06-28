@@ -34,7 +34,7 @@ library
                      , exceptions
                      , filepath
                      , haskell-src-exts
-                     , hindent >= 5.0.0
+                     , hindent >= 5.2.3
                      , hlint >= 1.9
                      , HUnit
                      , path
