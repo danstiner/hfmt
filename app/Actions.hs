@@ -20,7 +20,9 @@ act options r@(Reformat input source result) = act' (optAction options)
   where
     act' PrintDiffs =
       when wasReformatted (printDiff input source result) >> return r
-    act' PrintSources = undefined
+    act' PrintSources = do
+      when wasReformatted (printSource $ reformattedSource result)
+      return (Reformat input (reformattedSource result) result)
     act' PrintFilePaths = when wasReformatted (print input) >> return r
     act' WriteSources = do
       when wasReformatted (writeSource input (reformattedSource result))
@@ -47,6 +49,9 @@ showDiff (HaskellSource a) (HaskellSource b) = render (toDoc diff)
     toDoc = prettyContextDiff (text "Original") (text "Reformatted") text
     diff = getContextDiff linesOfContext (lines a) (lines b)
     linesOfContext = 1
+
+printSource :: HaskellSource -> IO ()
+printSource (HaskellSource source) = putStr source
 
 writeSource :: InputFile -> HaskellSource -> IO ()
 writeSource (InputFilePath path) (HaskellSource source) = writeFile path source
