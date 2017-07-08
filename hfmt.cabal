@@ -21,10 +21,10 @@ library
                      , Language.Haskell.Format.Utilities
                      , Language.Haskell.Source.Enumerator
   Other-Modules:     Language.Haskell.Format.Internal
-                     , Language.Haskell.Format.Definitions
                      , Language.Haskell.Format.HIndent
                      , Language.Haskell.Format.HLint
                      , Language.Haskell.Format.Stylish
+                     , Language.Haskell.Format.Types
                      , Path.Find
   GHC-Options:       -Wall
   Build-Depends:     base >= 4.8 && < 5

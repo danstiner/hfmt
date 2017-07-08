@@ -4,10 +4,10 @@ module Language.Haskell.Format.Stylish
   ) where
 
 import Control.Applicative
-import Language.Haskell.Stylish            as Stylish
+import Language.Haskell.Stylish         as Stylish
 
-import Language.Haskell.Format.Definitions
 import Language.Haskell.Format.Internal
+import Language.Haskell.Format.Types
 
 newtype Settings =
   Settings Stylish.Config

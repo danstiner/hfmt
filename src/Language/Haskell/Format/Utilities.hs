@@ -8,7 +8,7 @@ module Language.Haskell.Format.Utilities
 import           System.IO.Unsafe
 
 import           Language.Haskell.Format
-import           Language.Haskell.Format.Definitions
+import           Language.Haskell.Format.Types
 import           Language.Haskell.Source.Enumerator
 
 import           Control.Applicative
@@ -21,7 +21,7 @@ import           Data.Maybe
 import           Data.Monoid
 import           Pipes
 import           Pipes.Parse
-import qualified Pipes.Prelude                       as P
+import qualified Pipes.Prelude                      as P
 import           Test.HUnit
 import           Text.PrettyPrint
 

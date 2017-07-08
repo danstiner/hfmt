@@ -3,7 +3,7 @@ module Language.Haskell.Format.Internal
   , mkSuggester
   ) where
 
-import Language.Haskell.Format.Definitions
+import Language.Haskell.Format.Types
 
 import Control.Applicative
 

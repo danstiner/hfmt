@@ -1,4 +1,4 @@
-module Language.Haskell.Format.Definitions
+module Language.Haskell.Format.Types
   ( HaskellSource(..)
   , Reformatted(..)
   , Formatter(..)
