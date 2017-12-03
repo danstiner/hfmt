@@ -13,7 +13,7 @@ import Data.Monoid
 import Options.Applicative.Builder
 import Options.Applicative.Common
 import Options.Applicative.Extra
-import Text.PrettyPrint.ANSI.Leijen hiding (empty, (<$>), (<>))
+import Text.PrettyPrint.ANSI.Leijen hiding ((<$>), (<>))
 
 data Options = Options
   { optPrintDiffs     :: Bool

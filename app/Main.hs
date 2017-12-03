@@ -4,7 +4,7 @@ module Main
 
 import           Actions
 import           Language.Haskell.Format
-import           Language.Haskell.Format.Utilities  hiding (wasReformatted)
+import           Language.Haskell.Format.Utilities
 import           Language.Haskell.Source.Enumerator
 import           OptionsParser                      as Options
 import           Types
