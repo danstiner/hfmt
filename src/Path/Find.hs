@@ -12,7 +12,7 @@ import Control.Monad.Catch
 import Control.Monad.IO.Class
 import Data.List
 import Path
-import Path.IO                hiding (findFiles)
+import Path.IO
 import System.IO.Error        (isPermissionError)
 
 -- | Find the location of a file matching the given predicate.
