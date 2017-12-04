@@ -7,7 +7,7 @@ module Language.Haskell.Format.HIndent
 import           Control.Applicative
 import           Data.ByteString.Builder
 import           Data.ByteString.Lazy                as L
-import           Data.Maybe
+import           Data.Maybe                          ()
 import qualified Data.Text                           as Text
 import           Data.Text.Encoding                  as Encoding
 import           Data.Text.Lazy                      as TL
@@ -57,10 +57,10 @@ formatter :: Settings -> Formatter
 formatter = mkFormatter . hindent
 
 hindent :: Settings -> HaskellSource -> Either String HaskellSource
-hindent (Settings config extensions) (HaskellSource source) =
-  toHaskellSource <$> reformat config extensions Nothing sourceText
+hindent (Settings config extensions) (HaskellSource filepath source) =
+  HaskellSource filepath . unpackBuilder <$>
+  reformat config extensions Nothing sourceText
   where
     sourceText = Encoding.encodeUtf8 . Text.pack $ source
-    toHaskellSource =
-      HaskellSource .
+    unpackBuilder =
       Text.unpack . Encoding.decodeUtf8 . L.toStrict . toLazyByteString

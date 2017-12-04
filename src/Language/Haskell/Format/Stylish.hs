@@ -20,9 +20,9 @@ formatter :: Settings -> Formatter
 formatter = mkFormatter . stylish
 
 stylish :: Settings -> HaskellSource -> Either String HaskellSource
-stylish (Settings config) (HaskellSource source) =
-  HaskellSource . unlines <$>
-  Stylish.runSteps extensions Nothing steps sourceLines
+stylish (Settings config) (HaskellSource filepath source) =
+  HaskellSource filepath . unlines <$>
+  Stylish.runSteps extensions (Just filepath) steps sourceLines
   where
     sourceLines = lines source
     extensions = Stylish.configLanguageExtensions config

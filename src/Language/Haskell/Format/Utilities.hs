@@ -4,66 +4,95 @@ module Language.Haskell.Format.Utilities
   , defaultFormatter
   ) where
 
+import           System.IO.Unsafe
+
 import           Language.Haskell.Format
 import           Language.Haskell.Format.Definitions
 import           Language.Haskell.Source.Enumerator
 
 import           Control.Applicative
 import           Control.Monad
+import           Data.List
+import           Data.Maybe
 import           Data.Monoid
 import           Pipes
+import           Pipes.Parse
 import qualified Pipes.Prelude                       as P
 import           Test.HUnit
 
 type ErrorString = String
 
 data CheckResult
-  = InvalidCheckResult ErrorString
+  = InvalidCheckResult HaskellSource
+                       ErrorString
   | CheckResult HaskellSource
                 Reformatted
 
+checkResultPath :: CheckResult -> FilePath
+checkResultPath (InvalidCheckResult (HaskellSource filepath _) _) = filepath
+checkResultPath (CheckResult (HaskellSource filepath _) _)        = filepath
+
 hunitTest :: FilePath -> Test
-hunitTest filepath = TestLabel filepath $ makeTestCase filepath
+hunitTest filepath = TestLabel filepath . unsafePerformIO . testPath $ filepath
 
-makeTestCase :: FilePath -> Test
-makeTestCase filepath =
-  TestCase $ do
-    formatter <- defaultFormatter
-    runEffect $ check formatter filepath >-> assertResults
+testPath :: FilePath -> IO Test
+testPath filepath = do
+  formatter <- defaultFormatter
+  let tests =
+        check formatter filepath >-> P.map makeTestCase :: Producer Test IO ()
+  TestList <$> evalStateT foldToList tests
+  where
+    foldToList :: (Monad m) => Parser a m [a]
+    foldToList = foldAll (flip (:)) [] id
 
-assertResults :: Consumer CheckResult IO ()
-assertResults =
-  forever $ do
-    result <- await
-    case result of
-      (InvalidCheckResult errorString) ->
-        lift $ assertFailure ("Error: " ++ errorString)
-      (CheckResult source reformatted) ->
-        when (wasReformatted source reformatted) $
-        lift $
-        assertFailure
-          ("Incorrect formatting: " ++ concatMap show (suggestions reformatted))
+makeTestCase :: CheckResult -> Test
+makeTestCase result =
+  TestLabel (checkResultPath result) . TestCase $ assertCheckResult result
+
+assertCheckResult :: CheckResult -> IO ()
+assertCheckResult result =
+  case result of
+    (InvalidCheckResult _ errorString) ->
+      assertFailure ("Error: " ++ errorString)
+    (CheckResult source reformatted) ->
+      when (wasReformatted source reformatted) $
+      assertFailure (showReformatted source reformatted)
+  where
+    showReformatted :: HaskellSource -> Reformatted -> String
+    showReformatted source reformatted =
+      intercalate "\n" $
+      catMaybes
+        [ whenMaybe (sourceChanged source reformatted) "Incorrect formatting"
+        , whenMaybe
+            (hasSuggestions reformatted)
+            (concatMap show (suggestions reformatted))
+        ]
+    whenMaybe :: Bool -> a -> Maybe a
+    whenMaybe cond val = const val <$> guard cond
 
 check :: Formatter -> FilePath -> Producer CheckResult IO ()
-check formatter path =
-  enumeratePath path >-> P.mapM readSource >-> P.map (checkFormatting formatter)
+check formatter filepath =
+  enumeratePath filepath >-> P.mapM readSource >->
+  P.map (checkFormatting formatter)
 
 readSource :: HaskellSourceFilePath -> IO HaskellSource
-readSource path = HaskellSource <$> readFile path
+readSource filepath = HaskellSource filepath <$> readFile filepath
 
 checkFormatting :: Formatter -> HaskellSource -> CheckResult
 checkFormatting (Formatter format) source =
   case format source of
-    Left error        -> InvalidCheckResult error
+    Left error        -> InvalidCheckResult source error
     Right reformatted -> CheckResult source reformatted
-
-fix :: Formatter -> FilePath -> IO ()
-fix = undefined
 
 defaultFormatter :: IO Formatter
 defaultFormatter = mconcat <$> (autoSettings >>= formatters)
 
 wasReformatted :: HaskellSource -> Reformatted -> Bool
 wasReformatted source reformatted =
-  not (null (suggestions reformatted)) ||
-  source /= reformattedSource reformatted
+  hasSuggestions reformatted || sourceChanged source reformatted
+
+sourceChanged :: HaskellSource -> Reformatted -> Bool
+sourceChanged source reformatted = source /= reformattedSource reformatted
+
+hasSuggestions :: Reformatted -> Bool
+hasSuggestions reformatted = not (null (suggestions reformatted))

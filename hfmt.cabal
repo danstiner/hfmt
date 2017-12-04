@@ -40,6 +40,7 @@ library
                      , path
                      , path-io
                      , pipes
+                     , pipes-parse
                      , stylish-haskell >= 0.7
                      , text
                      , transformers

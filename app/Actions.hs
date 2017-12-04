@@ -44,15 +44,16 @@ printDiff InputFromStdIn source reformatted = do
   putStr (showDiff source (reformattedSource reformatted))
 
 showDiff :: HaskellSource -> HaskellSource -> String
-showDiff (HaskellSource a) (HaskellSource b) = render (toDoc diff)
+showDiff (HaskellSource _ a) (HaskellSource _ b) = render (toDoc diff)
   where
     toDoc = prettyContextDiff (text "Original") (text "Reformatted") text
     diff = getContextDiff linesOfContext (lines a) (lines b)
     linesOfContext = 1
 
 printSource :: HaskellSource -> IO ()
-printSource (HaskellSource source) = putStr source
+printSource (HaskellSource _ source) = putStr source
 
 writeSource :: InputFile -> HaskellSource -> IO ()
-writeSource (InputFilePath path) (HaskellSource source) = writeFile path source
-writeSource InputFromStdIn (HaskellSource source) = putStr source
+writeSource (InputFilePath path) (HaskellSource _ source) =
+  writeFile path source
+writeSource InputFromStdIn (HaskellSource _ source) = putStr source

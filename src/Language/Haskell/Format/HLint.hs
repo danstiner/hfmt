@@ -21,12 +21,11 @@ hlint ::
      (ParseFlags, [Classify], Hint)
   -> HaskellSource
   -> Either String [Suggestion]
-hlint (flags, classify, hint) (HaskellSource source) =
+hlint (flags, classify, hint) (HaskellSource filepath source) =
   case unsafePerformIO (parseModuleEx flags filepath (Just source)) of
     Right m         -> Right . map ideaToSuggestion . ideas $ m
     Left parseError -> Left . parseErrorMessage $ parseError
   where
-    filepath = ""
     ideas m = applyHints classify hint [m]
 
 autoSettings :: IO (ParseFlags, [Classify], Hint)

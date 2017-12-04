@@ -62,10 +62,10 @@ applyFormatter (Formatter format) (InputFileWithSource input source) =
     Right reformatted -> Reformat input source reformatted
 
 readSource :: HaskellSourceFilePath -> IO HaskellSource
-readSource path = HaskellSource <$> readFile path
+readSource path = HaskellSource path <$> readFile path
 
 readStdin :: IO HaskellSource
-readStdin = HaskellSource <$> getContents
+readStdin = HaskellSource "stdin" <$> getContents
 
 sourceChangedOrHasSuggestions :: ReformatResult -> Bool
 sourceChangedOrHasSuggestions (Reformat input source reformatted) =

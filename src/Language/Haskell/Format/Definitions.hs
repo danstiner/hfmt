@@ -11,8 +11,9 @@ import Data.Monoid
 
 type ErrorString = String
 
-newtype HaskellSource =
-  HaskellSource String
+data HaskellSource =
+  HaskellSource FilePath
+                String
   deriving (Eq)
 
 newtype Suggestion =

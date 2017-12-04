@@ -18,7 +18,6 @@ import qualified Language.Haskell.Format.HLint       as HLint
 import qualified Language.Haskell.Format.Stylish     as Stylish
 
 import           Control.Applicative
-import           Data.Maybe
 
 data Settings =
   Settings
