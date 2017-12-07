@@ -13,8 +13,12 @@ newtype Settings =
   Settings Stylish.Config
 
 autoSettings :: IO Settings
-autoSettings =
-  Settings <$> Stylish.loadConfig (Stylish.makeVerbose False) Nothing
+autoSettings = do
+  path <- Stylish.configFilePath verbose Nothing
+  config <- Stylish.loadConfig verbose (Just path)
+  return (Settings config)
+  where
+    verbose = Stylish.makeVerbose False
 
 formatter :: Settings -> Formatter
 formatter = mkFormatter . stylish
