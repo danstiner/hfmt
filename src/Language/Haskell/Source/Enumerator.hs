@@ -10,13 +10,14 @@ import           Distribution.PackageDescription
 import           Distribution.PackageDescription.Parse
 import qualified Distribution.Verbosity                as Verbosity
 import           Pipes
+import qualified Pipes.Prelude                         as P
 import           System.Directory
 import           System.FilePath
 
 type HaskellSourceFilePath = FilePath
 
 enumeratePath :: FilePath -> Producer HaskellSourceFilePath IO ()
-enumeratePath = filePath
+enumeratePath path = filePath path >-> P.map normalise
 
 filePath :: FilePath -> Producer HaskellSourceFilePath IO ()
 filePath path = do
