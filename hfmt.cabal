@@ -11,7 +11,7 @@ homepage:            http://github.com/danstiner/hfmt
 bug-reports:         http://github.com/danstiner/hfmt/issues
 category:            Language
 build-type:          Simple
-extra-source-files:  README.md
+extra-source-files:  README.md, .stylish-haskell.yaml
 cabal-version:       >=1.9.2
 tested-with:         GHC == 7.10.3, GHC == 8.0.2, GHC == 8.2.2, GHC == 8.3
 
