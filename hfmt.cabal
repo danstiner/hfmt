@@ -30,6 +30,7 @@ library
   Build-Depends:     base >= 4.8 && < 5
                      , bytestring
                      , Cabal
+                     , Diff
                      , directory
                      , exceptions
                      , filepath
@@ -41,6 +42,7 @@ library
                      , path-io
                      , pipes
                      , pipes-parse
+                     , pretty
                      , stylish-haskell >= 0.7
                      , text
                      , transformers
@@ -56,10 +58,8 @@ executable hfmt
   Build-Depends:     base == 4.*
                    , hfmt
                    , ansi-wl-pprint
-                   , Diff
                    , optparse-applicative
                    , pipes
-                   , pretty
 
 test-suite self-formatting-test
   Type:              exitcode-stdio-1.0

@@ -3,14 +3,11 @@ module Actions
   ) where
 
 import Language.Haskell.Format
+import Language.Haskell.Format.Utilities
 import OptionsParser
 import Types
 
 import Control.Monad
-import Data.Algorithm.Diff
-import Data.Algorithm.DiffContext
-import Data.Algorithm.DiffOutput
-import Text.PrettyPrint
 
 act :: Options -> ReformatResult -> IO ReformatResult
 act options r@(InvalidReformat input errorString) = do
@@ -42,13 +39,6 @@ printDiff (InputFilePath path) source reformatted = do
 printDiff InputFromStdIn source reformatted = do
   mapM_ (putStr . show) (suggestions reformatted)
   putStr (showDiff source (reformattedSource reformatted))
-
-showDiff :: HaskellSource -> HaskellSource -> String
-showDiff (HaskellSource _ a) (HaskellSource _ b) = render (toDoc diff)
-  where
-    toDoc = prettyContextDiff (text "Original") (text "Reformatted") text
-    diff = getContextDiff linesOfContext (lines a) (lines b)
-    linesOfContext = 1
 
 printSource :: HaskellSource -> IO ()
 printSource (HaskellSource _ source) = putStr source

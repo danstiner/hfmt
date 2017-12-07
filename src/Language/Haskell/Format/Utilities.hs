@@ -2,6 +2,7 @@ module Language.Haskell.Format.Utilities
   ( wasReformatted
   , hunitTest
   , defaultFormatter
+  , showDiff
   ) where
 
 import           System.IO.Unsafe
@@ -12,6 +13,9 @@ import           Language.Haskell.Source.Enumerator
 
 import           Control.Applicative
 import           Control.Monad
+import           Data.Algorithm.Diff
+import           Data.Algorithm.DiffContext
+import           Data.Algorithm.DiffOutput
 import           Data.List
 import           Data.Maybe
 import           Data.Monoid
@@ -19,6 +23,7 @@ import           Pipes
 import           Pipes.Parse
 import qualified Pipes.Prelude                       as P
 import           Test.HUnit
+import           Text.PrettyPrint
 
 type ErrorString = String
 
@@ -62,13 +67,26 @@ assertCheckResult result =
     showReformatted source reformatted =
       intercalate "\n" $
       catMaybes
-        [ whenMaybe (sourceChanged source reformatted) "Incorrect formatting"
-        , whenMaybe
-            (hasSuggestions reformatted)
-            (concatMap show (suggestions reformatted))
+        [ showSourceChanges source reformatted
+        , showSuggestions source reformatted
         ]
+    showSourceChanges source reformatted =
+      whenMaybe
+        (sourceChanged source reformatted)
+        (showDiff source (reformattedSource reformatted))
+    showSuggestions source reformatted =
+      whenMaybe
+        (hasSuggestions reformatted)
+        (concatMap show (suggestions reformatted))
     whenMaybe :: Bool -> a -> Maybe a
     whenMaybe cond val = const val <$> guard cond
+
+showDiff :: HaskellSource -> HaskellSource -> String
+showDiff (HaskellSource _ a) (HaskellSource _ b) = render (toDoc diff)
+  where
+    toDoc = prettyContextDiff (text "Original") (text "Reformatted") text
+    diff = getContextDiff linesOfContext (lines a) (lines b)
+    linesOfContext = 1
 
 check :: Formatter -> FilePath -> Producer CheckResult IO ()
 check formatter filepath =
