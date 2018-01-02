@@ -1,73 +1,89 @@
+{-# LANGUAGE Rank2Types #-}
+
 module Main
   ( main
   ) where
 
-import           Actions
-import           Language.Haskell.Format
-import           Language.Haskell.Format.Utilities
-import           Language.Haskell.Source.Enumerator
-import           OptionsParser                      as Options
-import           Types
+import Actions
+import Language.Haskell.Format
+import Language.Haskell.Format.Utilities
+import Language.Haskell.Source.Enumerator
+import Options
+import Types
 
-import           Control.Applicative
-import           Control.Monad
-import           Data.List
-import           Data.Maybe
-import           Data.Monoid
-import           Options.Applicative.Extra          as OptApp
-import           Pipes
-import qualified Pipes.Prelude                      as P
-import           System.Exit
+import Conduit
+import Control.Monad
+import Data.List
+import Data.Maybe
+import Data.Monoid
+import Options.Applicative.Extra          as OptApp
+import System.Exit
 
 main :: IO ()
 main = do
   options <- execParser Options.parser
-  formatter <- defaultFormatter
-  reformatNeeded <- runFormatter formatter options
-  if reformatNeeded
-    then exitFailure
-    else exitSuccess
+  changesToApply <- run options
+  exitWith $ exitCode options changesToApply
 
-runFormatter :: Formatter -> Options -> IO Bool
-runFormatter formatter options =
-  anyStrict
-    sourceChangedOrHasSuggestions
-    (inputFiles >-> P.map reformat >-> P.mapM writeOutput)
+exitCode :: Options -> Bool -> ExitCode
+exitCode options changesToApply =
+  if changesToApply && exitCodeShouldReflectChangesToApply options
+    then ExitFailure 1
+    else ExitSuccess
+  -- | Check if exit code should be non-zero if there are changes still needing to be applied
+  --
+  -- Assume if we are printing sources that we are not being run in a CI on
+  -- on the command line but actually as run as a tool inside neoformat or
+  -- similar context where non-zero exit indicates tool failure.
   where
-    anyStrict :: Monad m => (a -> Bool) -> Producer a m () -> m Bool
-    anyStrict f = P.fold (\acc x -> acc || f x) False id
-    inputFiles = readInputFiles options
-    reformat = applyFormatter formatter
-    writeOutput = Actions.act options
+    exitCodeShouldReflectChangesToApply :: Options -> Bool
+    exitCodeShouldReflectChangesToApply options =
+      optAction options /= PrintSources
 
-readInputFiles :: Options -> Producer InputFileWithSource IO ()
-readInputFiles options =
-  determineInputFilePaths (optPaths options) >-> P.mapM readInputFile
+run :: Options -> IO Bool
+run options =
+  runConduit $
+  sources .| mapMC readSource .| mapMC formatSource .| handleFormatErrors .|
+  mapMC action .|
+  summarize
+  where
+    sources :: Source IO SourceFile
+    sources = mapM_ sourcesFromPath (optPaths options)
+    readSource = readSourceFile
+    formatSource source = do
+      formatter <- defaultFormatter
+      return $ applyFormatter formatter source
+    handleFormatErrors = concatMapMC handleFormatError
+    action = Actions.act options
+    summarize =
+      anyC' (\(Formatted input source result) -> wasReformatted source result)
 
-determineInputFilePaths :: [FilePath] -> Producer InputFile IO ()
-determineInputFilePaths [] = enumeratePath "." >-> P.map InputFilePath
-determineInputFilePaths ["-"] = yield InputFromStdIn
-determineInputFilePaths paths =
-  for (each paths) enumeratePath >-> P.map InputFilePath
+sourcesFromPath :: FilePath -> Source IO SourceFile
+sourcesFromPath "-"  = yield SourceFromStdIn
+sourcesFromPath path = enumeratePathC path .| mapC SourceFilePath
 
-readInputFile :: InputFile -> IO InputFileWithSource
-readInputFile (InputFilePath path) =
-  InputFileWithSource (InputFilePath path) <$> readSource path
-readInputFile InputFromStdIn = InputFileWithSource InputFromStdIn <$> readStdin
+readSourceFile :: SourceFile -> IO SourceFileWithContents
+readSourceFile = undefined
 
-applyFormatter :: Formatter -> InputFileWithSource -> ReformatResult
-applyFormatter (Formatter format) (InputFileWithSource input source) =
-  case format source of
-    Left error        -> InvalidReformat input error
-    Right reformatted -> Reformat input source reformatted
+applyFormatter :: Formatter -> SourceFileWithContents -> FormatResult
+applyFormatter (Formatter format) (SourceFileWithContents file contents) =
+  case format contents of
+    Left error     -> Left (FormatError file error)
+    Right reformat -> Right (Formatted file contents reformat)
 
-readSource :: HaskellSourceFilePath -> IO HaskellSource
-readSource path = HaskellSource path <$> readFile path
+handleFormatError :: FormatResult -> IO (Maybe Formatted)
+handleFormatError (Left err)        = printFormatError err >> return Nothing
+handleFormatError (Right formatted) = return $ Just formatted
 
-readStdin :: IO HaskellSource
-readStdin = HaskellSource "stdin" <$> getContents
+printFormatError :: FormatError -> IO ()
+printFormatError (FormatError input errorString) =
+  putStrLn ("Error reformatting " ++ show input ++ ": " ++ errorString)
 
-sourceChangedOrHasSuggestions :: ReformatResult -> Bool
-sourceChangedOrHasSuggestions (Reformat input source reformatted) =
-  not (null (suggestions reformatted)) ||
-  source /= reformattedSource reformatted
+-- | Check that at least one value in the stream returns True.
+--
+-- Does not shortcut, entire stream is always consumed
+anyC' :: Monad m => (a -> Bool) -> Consumer a m Bool
+anyC' f = do
+  result <- anyC f -- Check for at least one value, may shortcut
+  sinkNull -- consume any remaining input skipped by a shortcut
+  return result

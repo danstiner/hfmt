@@ -53,11 +53,12 @@ executable hfmt
   Hs-Source-Dirs:    app
   Main-Is:           Main.hs
   Other-Modules:     Actions
-                   , OptionsParser
+                   , Options
                    , Types
   GHC-Options:       -Wall
   Build-Depends:     base == 4.*
                    , conduit
+                   , conduit-combinators
                    , hfmt
                    , ansi-wl-pprint
                    , optparse-applicative

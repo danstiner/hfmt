@@ -1,9 +1,11 @@
 module Language.Haskell.Source.Enumerator
   ( enumeratePath
+  , enumeratePathC
   , HaskellSourceFilePath
   ) where
 
 import           Control.Monad
+import           Data.Conduit                          (Source)
 import           Data.List
 import           Distribution.PackageDescription
 import           Distribution.PackageDescription.Parse
@@ -14,6 +16,9 @@ import           System.Directory
 import           System.FilePath
 
 type HaskellSourceFilePath = FilePath
+
+enumeratePathC :: FilePath -> Source IO FilePath
+enumeratePathC = undefined
 
 enumeratePath :: FilePath -> Producer HaskellSourceFilePath IO ()
 enumeratePath path = filePath path >-> P.map normalise

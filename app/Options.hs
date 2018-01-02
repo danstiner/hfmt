@@ -1,4 +1,4 @@
-module OptionsParser
+module Options
   ( Options
   , optAction
   , optPaths
