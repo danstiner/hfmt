@@ -30,6 +30,7 @@ library
   Build-Depends:     base >= 4.8 && < 5
                      , bytestring
                      , Cabal
+                     , conduit
                      , Diff
                      , directory
                      , exceptions
@@ -56,6 +57,7 @@ executable hfmt
                    , Types
   GHC-Options:       -Wall
   Build-Depends:     base == 4.*
+                   , conduit
                    , hfmt
                    , ansi-wl-pprint
                    , optparse-applicative
