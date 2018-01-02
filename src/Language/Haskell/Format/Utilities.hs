@@ -11,7 +11,6 @@ import           Language.Haskell.Format
 import           Language.Haskell.Format.Types
 import           Language.Haskell.Source.Enumerator
 
-import           Control.Applicative
 import           Control.Monad
 import           Data.Algorithm.Diff
 import           Data.Algorithm.DiffContext

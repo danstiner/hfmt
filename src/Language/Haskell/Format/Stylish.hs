@@ -3,7 +3,6 @@ module Language.Haskell.Format.Stylish
   , formatter
   ) where
 
-import Control.Applicative
 import Language.Haskell.Stylish         as Stylish
 
 import Language.Haskell.Format.Internal

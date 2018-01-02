@@ -5,9 +5,8 @@ module Language.Haskell.Format.Types
   , Suggestion(..)
   ) where
 
-import Control.Applicative
 import Control.Monad
-import Data.Monoid         ((<>))
+import Data.Monoid   ((<>))
 
 type ErrorString = String
 

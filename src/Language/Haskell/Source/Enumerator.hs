@@ -3,7 +3,6 @@ module Language.Haskell.Source.Enumerator
   , HaskellSourceFilePath
   ) where
 
-import           Control.Applicative
 import           Control.Monad
 import           Data.List
 import           Distribution.PackageDescription

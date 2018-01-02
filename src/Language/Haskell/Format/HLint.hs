@@ -6,7 +6,6 @@ module Language.Haskell.Format.HLint
 import           Language.Haskell.Format.Internal
 import           Language.Haskell.Format.Types
 
-import           Control.Applicative
 import           Language.Haskell.HLint3          (Classify, Hint,
                                                    ParseError (..), ParseFlags,
                                                    applyHints, parseModuleEx)

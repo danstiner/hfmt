@@ -5,8 +5,6 @@ module Language.Haskell.Format.Internal
 
 import Language.Haskell.Format.Types
 
-import Control.Applicative
-
 mkFormatter :: (HaskellSource -> Either String HaskellSource) -> Formatter
 mkFormatter f = Formatter (fmap (\source -> Reformatted source []) . f)
 

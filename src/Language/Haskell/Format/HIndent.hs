@@ -4,14 +4,10 @@ module Language.Haskell.Format.HIndent
   , defaultFormatter
   ) where
 
-import           Control.Applicative
 import           Data.ByteString.Builder
 import           Data.ByteString.Lazy             as L
-import           Data.Maybe                          ()
 import qualified Data.Text                        as Text
 import           Data.Text.Encoding               as Encoding
-import           Data.Text.Lazy                   as TL
-import           Data.Text.Lazy.Builder
 import qualified Data.Yaml                        as Y
 import           HIndent
 import           HIndent.Types
