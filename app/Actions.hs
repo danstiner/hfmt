@@ -28,7 +28,7 @@ printDiff (SourceFilePath path) source reformatted = do
   putStrLn (path ++ ":")
   mapM_ (putStr . show) (suggestions reformatted)
   putStr (showDiff source (reformattedSource reformatted))
-printDiff SourceFromStdIn source reformatted = do
+printDiff StdinSource source reformatted = do
   mapM_ (putStr . show) (suggestions reformatted)
   putStr (showDiff source (reformattedSource reformatted))
 
@@ -38,4 +38,4 @@ printSource (HaskellSource _ source) = putStr source
 writeSource :: SourceFile -> HaskellSource -> IO ()
 writeSource (SourceFilePath path) (HaskellSource _ source) =
   writeFile path source
-writeSource SourceFromStdIn (HaskellSource _ source) = putStr source
+writeSource StdinSource (HaskellSource _ source) = putStr source

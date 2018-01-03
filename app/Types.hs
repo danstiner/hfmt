@@ -3,14 +3,12 @@ module Types
   , FormatResult
   , FormatError(..)
   , Formatted(..)
-  , HaskellSourceFilePath
   , HaskellSource(..)
   , SourceFile(..)
   , SourceFileWithContents(..)
   ) where
 
 import Language.Haskell.Format
-import Language.Haskell.Source.Enumerator (HaskellSourceFilePath)
 
 data Action
   = PrintDiffs
@@ -20,12 +18,12 @@ data Action
   deriving (Eq)
 
 data SourceFile
-  = SourceFilePath HaskellSourceFilePath
-  | SourceFromStdIn
+  = SourceFilePath FilePath
+  | StdinSource
 
 instance Show SourceFile where
   show (SourceFilePath path) = path
-  show SourceFromStdIn       = "-"
+  show StdinSource           = "-"
 
 data SourceFileWithContents =
   SourceFileWithContents SourceFile

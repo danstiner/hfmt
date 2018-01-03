@@ -48,8 +48,7 @@ run options =
   summarize
   where
     sources :: Source IO SourceFile
-    sources = mapM_ sourcesFromPath (optPaths options)
-    readSource = readSourceFile
+    sources = mapM_ sourcesFromPath (optPaths options) -- TODO Default to '.' if no sources given
     formatSource source = do
       formatter <- defaultFormatter
       return $ applyFormatter formatter source
@@ -59,11 +58,12 @@ run options =
       anyC' (\(Formatted input source result) -> wasReformatted source result)
 
 sourcesFromPath :: FilePath -> Source IO SourceFile
-sourcesFromPath "-"  = yield SourceFromStdIn
-sourcesFromPath path = enumeratePathC path .| mapC SourceFilePath
+sourcesFromPath "-"  = yield StdinSource
+sourcesFromPath path = enumeratePath path .| mapC SourceFilePath
 
-readSourceFile :: SourceFile -> IO SourceFileWithContents
-readSourceFile = undefined
+readSource :: SourceFile -> IO SourceFileWithContents
+readSource s@(SourceFilePath path) = SourceFileWithContents s . HaskellSource path <$> readFile path
+readSource s@StdinSource = SourceFileWithContents s . HaskellSource "stdin" <$> getContents
 
 applyFormatter :: Formatter -> SourceFileWithContents -> FormatResult
 applyFormatter (Formatter format) (SourceFileWithContents file contents) =

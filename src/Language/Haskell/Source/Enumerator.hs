@@ -1,77 +1,47 @@
 module Language.Haskell.Source.Enumerator
   ( enumeratePath
-  , enumeratePathC
-  , HaskellSourceFilePath
   ) where
 
+import           Conduit
+import           Control.Applicative
 import           Control.Monad
-import           Data.Conduit                          (Source)
 import           Data.List
 import           Distribution.PackageDescription
 import           Distribution.PackageDescription.Parse
 import qualified Distribution.Verbosity                as Verbosity
-import           Pipes
-import qualified Pipes.Prelude                         as P
 import           System.Directory
 import           System.FilePath
 
-type HaskellSourceFilePath = FilePath
+enumeratePath :: FilePath -> Source IO FilePath
+enumeratePath path = enumPath path .| mapC normalise
 
-enumeratePathC :: FilePath -> Source IO FilePath
-enumeratePathC = undefined
+enumPath :: FilePath -> Source IO FilePath
+enumPath path = do
+  isDirectory <- lift $ doesDirectoryExist path
+  case isDirectory of
+    True  -> enumDirectory path
+    False | hasCabalExtension path -> enumPackage path
+    False | hasHaskellExtension path -> yield path
+    False -> return ()
 
-enumeratePath :: FilePath -> Producer HaskellSourceFilePath IO ()
-enumeratePath path = filePath path >-> P.map normalise
-
-filePath :: FilePath -> Producer HaskellSourceFilePath IO ()
-filePath path = do
-  isCabal <- lift $ isCabalFile path
-  if isCabal
-    then package' path
-    else directoryOrFile path
-
-simpleFilePath :: FilePath -> Producer HaskellSourceFilePath IO ()
-simpleFilePath path = do
-  isHaskellSource <- lift $ isHaskellSourceFile path
-  when isHaskellSource $ yield path
-
-simpleDirectory :: FilePath -> Producer HaskellSourceFilePath IO ()
-simpleDirectory path = do
-  contents <- lift $ getDirectoryContentsFullPaths path
-  mapM_ simpleFileOrDirectory contents
-
-simpleFileOrDirectory :: FilePath -> Producer HaskellSourceFilePath IO ()
-simpleFileOrDirectory filepath = do
-  dir <- lift $ doesDirectoryExist filepath
-  if dir
-    then simpleDirectory filepath
-    else simpleFilePath filepath
-
-package' :: FilePath -> Producer HaskellSourceFilePath IO ()
-package' path = readPackage path >>= expandPaths
+enumPackage :: FilePath -> Source IO FilePath
+enumPackage cabalFile = readPackage cabalFile >>= expandPaths
   where
     readPackage = lift . readPackageDescription Verbosity.silent
-    expandPaths = mapM_ (simpleFileOrDirectory . mkFull) . sourcePaths
-    dir = dropFileName path
-    mkFull = (dir </>)
+    expandPaths = mapM_ (enumPath . mkFull) . sourcePaths
+    packageDir = dropFileName cabalFile
+    mkFull = (packageDir </>)
 
-directory :: FilePath -> Producer HaskellSourceFilePath IO ()
-directory path = do
-  contents <- lift $ getDirectoryContentsFullPaths path
+enumDirectory :: FilePath -> Source IO FilePath
+enumDirectory path = do
+  contents <- lift $ getDirectoryContentFullPaths path
   cabalFiles <- lift $ filterM isCabalFile contents
   if null cabalFiles
-    then mapM_ directoryOrFile contents
-    else mapM_ package' cabalFiles
+    then mapM_ enumPath contents
+    else mapM_ enumPackage cabalFiles
 
-directoryOrFile :: FilePath -> Producer HaskellSourceFilePath IO ()
-directoryOrFile path = do
-  isFile <- lift $ doesFileExist path
-  if isFile
-    then simpleFilePath path
-    else directory path
-
-getDirectoryContentsFullPaths :: FilePath -> IO [FilePath]
-getDirectoryContentsFullPaths path =
+getDirectoryContentFullPaths :: FilePath -> IO [FilePath]
+getDirectoryContentFullPaths path =
   mkFull . notHidden . notMeta <$> getDirectoryContents path
   where
     mkFull = map (path </>)
@@ -79,16 +49,13 @@ getDirectoryContentsFullPaths path =
     notMeta = (\\ [".", ".."])
 
 isCabalFile :: FilePath -> IO Bool
-isCabalFile path = (hasCabalExtension &&) <$> isFile
-  where
-    isFile = doesFileExist path
-    hasCabalExtension = ".cabal" `isSuffixOf` path
+isCabalFile path = return (hasCabalExtension path) <&&> doesFileExist path
 
-isHaskellSourceFile :: FilePath -> IO Bool
-isHaskellSourceFile path = (hasHaskellExtension &&) <$> isFile
-  where
-    isFile = doesFileExist path
-    hasHaskellExtension = ".hs" `isSuffixOf` path || ".lhs" `isSuffixOf` path
+hasCabalExtension :: FilePath -> Bool
+hasCabalExtension path = ".cabal" `isSuffixOf` path
+
+hasHaskellExtension :: FilePath -> Bool
+hasHaskellExtension path = ".hs" `isSuffixOf` path || ".lhs" `isSuffixOf` path
 
 sourcePaths :: GenericPackageDescription -> [FilePath]
 sourcePaths pkg = nub $ concatMap ($ pkg) pathExtractors
@@ -102,3 +69,7 @@ sourcePaths pkg = nub $ concatMap ($ pkg) pathExtractors
       , concatMap (hsSourceDirs . benchmarkBuildInfo . condTreeData . snd) .
         condBenchmarks
       ]
+
+(<&&>) :: Applicative f => f Bool -> f Bool -> f Bool
+(<&&>) = liftA2 (&&)
+infixr 3 <&&> -- same as (&&)

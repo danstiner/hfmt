@@ -1,28 +1,26 @@
 module Language.Haskell.Format.Utilities
-  ( wasReformatted
+  ( defaultFormatter
   , hunitTest
-  , defaultFormatter
   , showDiff
+  , wasReformatted
   ) where
 
-import           System.IO.Unsafe
+import System.IO.Unsafe
 
-import           Language.Haskell.Format
-import           Language.Haskell.Format.Types
-import           Language.Haskell.Source.Enumerator
+import Language.Haskell.Format
+import Language.Haskell.Format.Types
+import Language.Haskell.Source.Enumerator
 
-import           Control.Monad
-import           Data.Algorithm.Diff
-import           Data.Algorithm.DiffContext
-import           Data.Algorithm.DiffOutput
-import           Data.List
-import           Data.Maybe
-import           Data.Monoid
-import           Pipes
-import           Pipes.Parse
-import qualified Pipes.Prelude                      as P
-import           Test.HUnit
-import           Text.PrettyPrint
+import Conduit
+import Control.Monad
+import Data.Algorithm.Diff
+import Data.Algorithm.DiffContext
+import Data.Algorithm.DiffOutput
+import Data.List
+import Data.Maybe
+import Data.Monoid
+import Test.HUnit
+import Text.PrettyPrint
 
 type ErrorString = String
 
@@ -42,12 +40,7 @@ hunitTest filepath = TestLabel filepath . unsafePerformIO . testPath $ filepath
 testPath :: FilePath -> IO Test
 testPath filepath = do
   formatter <- defaultFormatter
-  let tests =
-        check formatter filepath >-> P.map makeTestCase :: Producer Test IO ()
-  TestList <$> evalStateT foldToList tests
-  where
-    foldToList :: (Monad m) => Parser a m [a]
-    foldToList = foldAll (flip (:)) [] id
+  TestList <$> runConduit (check formatter filepath .| mapC makeTestCase .| sinkList)
 
 makeTestCase :: CheckResult -> Test
 makeTestCase result =
@@ -87,13 +80,12 @@ showDiff (HaskellSource _ a) (HaskellSource _ b) = render (toDoc diff)
     diff = getContextDiff linesOfContext (lines a) (lines b)
     linesOfContext = 1
 
-check :: Formatter -> FilePath -> Producer CheckResult IO ()
+check :: Formatter -> FilePath -> Source IO CheckResult
 check formatter filepath =
-  enumeratePath filepath >-> P.mapM readSource >->
-  P.map (checkFormatting formatter)
+  enumeratePath filepath .| mapMC readSourceFile .| mapC (checkFormatting formatter)
 
-readSource :: HaskellSourceFilePath -> IO HaskellSource
-readSource filepath = HaskellSource filepath <$> readFile filepath
+readSourceFile :: FilePath -> IO HaskellSource
+readSourceFile filepath = HaskellSource filepath <$> readFile filepath
 
 checkFormatting :: Formatter -> HaskellSource -> CheckResult
 checkFormatting (Formatter format) source =
