@@ -35,15 +35,15 @@ library
                      , exceptions
                      , filepath
                      , haskell-src-exts < 1.20
-                     , hindent >= 5.2.3
-                     , hlint >= 1.9
+                     , hindent == 5.*
+                     , hlint == 2.*
                      , HUnit
                      , path
                      , path-io
                      , pipes
                      , pipes-parse
                      , pretty
-                     , stylish-haskell >= 0.7
+                     , stylish-haskell == 0.8.*
                      , text
                      , transformers
                      , yaml
