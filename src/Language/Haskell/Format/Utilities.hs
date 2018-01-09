@@ -40,7 +40,8 @@ hunitTest filepath = TestLabel filepath . unsafePerformIO . testPath $ filepath
 testPath :: FilePath -> IO Test
 testPath filepath = do
   formatter <- defaultFormatter
-  TestList <$> runConduit (check formatter filepath .| mapC makeTestCase .| sinkList)
+  TestList <$>
+    runConduit (check formatter filepath .| mapC makeTestCase .| sinkList)
 
 makeTestCase :: CheckResult -> Test
 makeTestCase result =
@@ -82,7 +83,8 @@ showDiff (HaskellSource _ a) (HaskellSource _ b) = render (toDoc diff)
 
 check :: Formatter -> FilePath -> Source IO CheckResult
 check formatter filepath =
-  enumeratePath filepath .| mapMC readSourceFile .| mapC (checkFormatting formatter)
+  enumeratePath filepath .| mapMC readSourceFile .|
+  mapC (checkFormatting formatter)
 
 readSourceFile :: FilePath -> IO HaskellSource
 readSourceFile filepath = HaskellSource filepath <$> readFile filepath

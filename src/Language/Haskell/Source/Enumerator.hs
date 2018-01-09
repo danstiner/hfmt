@@ -19,9 +19,11 @@ enumPath :: FilePath -> Source IO FilePath
 enumPath path = do
   isDirectory <- lift $ doesDirectoryExist path
   case isDirectory of
-    True  -> enumDirectory path
-    False | hasCabalExtension path -> enumPackage path
-    False | hasHaskellExtension path -> yield path
+    True -> enumDirectory path
+    False
+      | hasCabalExtension path -> enumPackage path
+    False
+      | hasHaskellExtension path -> yield path
     False -> return ()
 
 enumPackage :: FilePath -> Source IO FilePath
@@ -72,4 +74,5 @@ sourcePaths pkg = nub $ concatMap ($ pkg) pathExtractors
 
 (<&&>) :: Applicative f => f Bool -> f Bool -> f Bool
 (<&&>) = liftA2 (&&)
+
 infixr 3 <&&> -- same as (&&)

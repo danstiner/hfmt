@@ -62,8 +62,10 @@ sourcesFromPath "-"  = yield StdinSource
 sourcesFromPath path = enumeratePath path .| mapC SourceFilePath
 
 readSource :: SourceFile -> IO SourceFileWithContents
-readSource s@(SourceFilePath path) = SourceFileWithContents s . HaskellSource path <$> readFile path
-readSource s@StdinSource = SourceFileWithContents s . HaskellSource "stdin" <$> getContents
+readSource s@(SourceFilePath path) =
+  SourceFileWithContents s . HaskellSource path <$> readFile path
+readSource s@StdinSource =
+  SourceFileWithContents s . HaskellSource "stdin" <$> getContents
 
 applyFormatter :: Formatter -> SourceFileWithContents -> FormatResult
 applyFormatter (Formatter format) (SourceFileWithContents file contents) =
