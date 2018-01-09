@@ -17,6 +17,7 @@ import Data.List
 import Data.Maybe
 import Data.Monoid
 import Options.Applicative.Extra          as OptApp
+import System.Directory
 import System.Exit
 
 main :: IO ()
@@ -47,8 +48,15 @@ run options =
   mapMC action .|
   summarize
   where
+    paths = do
+      let explicitPaths = optPaths options
+      if null explicitPaths
+        then do
+          currentPath <- getCurrentDirectory
+          return [currentPath]
+        else return explicitPaths
     sources :: Source IO SourceFile
-    sources = mapM_ sourcesFromPath (optPaths options) -- TODO Default to '.' if no sources given
+    sources = lift paths >>= mapM_ sourcesFromPath
     formatSource source = do
       formatter <- defaultFormatter
       return $ applyFormatter formatter source

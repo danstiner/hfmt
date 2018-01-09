@@ -58,6 +58,7 @@ executable hfmt
   GHC-Options:       -Wall
   Build-Depends:     base == 4.*
                    , conduit-combinators
+                   , directory
                    , hfmt
                    , ansi-wl-pprint
                    , optparse-applicative
