@@ -56,7 +56,7 @@ executable hfmt
                    , Options
                    , Types
   GHC-Options:       -Wall
-  Build-Depends:     base == 4.*
+  Build-Depends:     base >= 4.8 && < 5
                    , conduit-combinators
                    , directory
                    , hfmt
