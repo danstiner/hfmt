@@ -41,8 +41,6 @@ library
                      , HUnit
                      , path
                      , path-io
-                     , pipes
-                     , pipes-parse
                      , pretty
                      , stylish-haskell == 0.8.*
                      , text
@@ -62,7 +60,6 @@ executable hfmt
                    , hfmt
                    , ansi-wl-pprint
                    , optparse-applicative
-                   , pipes
 
 test-suite self-formatting-test
   Type:              exitcode-stdio-1.0
