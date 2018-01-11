@@ -29,7 +29,7 @@ enumPath path = do
 enumPackage :: FilePath -> Source IO FilePath
 enumPackage cabalFile = readPackage cabalFile >>= expandPaths
   where
-    readPackage = lift . readGenericPackageDescription Verbosity.silent
+    readPackage = lift . readPackageDescription Verbosity.silent
     expandPaths = mapM_ (enumPath . mkFull) . sourcePaths
     packageDir = dropFileName cabalFile
     mkFull = (packageDir </>)
