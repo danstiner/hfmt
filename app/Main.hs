@@ -5,6 +5,7 @@ module Main
   ) where
 
 import Actions
+import ExitCode
 import Language.Haskell.Format
 import Language.Haskell.Format.Utilities
 import Language.Haskell.Source.Enumerator
@@ -23,23 +24,8 @@ import System.Exit
 main :: IO ()
 main = do
   options <- execParser Options.parser
-  changesToApply <- run options
-  exitWith $ exitCode options changesToApply
-
--- | Check if exit code should be non-zero if there are changes still needing to be applied
---
--- Assume if we are printing sources that we are not being run in a CI on
--- on the command line but actually as run as a tool inside neoformat or
--- similar context where non-zero exit indicates tool failure.
-exitCode :: Options -> Bool -> ExitCode
-exitCode options changesToApply =
-  if changesToApply && exitCodeShouldReflectChangesToApply options
-    then ExitFailure 1
-    else ExitSuccess
-  where
-    exitCodeShouldReflectChangesToApply :: Options -> Bool
-    exitCodeShouldReflectChangesToApply options =
-      optAction options /= PrintSources
+  formattedCodeDiffers <- run options
+  exitWith $ exitCode (optAction options) formattedCodeDiffers
 
 run :: Options -> IO Bool
 run options =

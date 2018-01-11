@@ -51,6 +51,7 @@ executable hfmt
   Hs-Source-Dirs:    app
   Main-Is:           Main.hs
   Other-Modules:     Actions
+                   , ExitCode
                    , Options
                    , Types
   GHC-Options:       -Wall
