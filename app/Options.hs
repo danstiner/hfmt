@@ -68,7 +68,7 @@ optionParser =
         ]
 
 unorderdedList :: String -> [Doc] -> Doc
-unorderdedList prefix = vsep . map ((text prefix <>)) . map align
+unorderdedList prefix = vsep . map ((text prefix <>) . align)
 
 optionParserInfo :: ParserInfo Options
 optionParserInfo =
