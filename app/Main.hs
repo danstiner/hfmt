@@ -26,16 +26,16 @@ main = do
   changesToApply <- run options
   exitWith $ exitCode options changesToApply
 
+-- | Check if exit code should be non-zero if there are changes still needing to be applied
+--
+-- Assume if we are printing sources that we are not being run in a CI on
+-- on the command line but actually as run as a tool inside neoformat or
+-- similar context where non-zero exit indicates tool failure.
 exitCode :: Options -> Bool -> ExitCode
 exitCode options changesToApply =
   if changesToApply && exitCodeShouldReflectChangesToApply options
     then ExitFailure 1
     else ExitSuccess
-  -- | Check if exit code should be non-zero if there are changes still needing to be applied
-  --
-  -- Assume if we are printing sources that we are not being run in a CI on
-  -- on the command line but actually as run as a tool inside neoformat or
-  -- similar context where non-zero exit indicates tool failure.
   where
     exitCodeShouldReflectChangesToApply :: Options -> Bool
     exitCodeShouldReflectChangesToApply options =
