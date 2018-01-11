@@ -39,14 +39,6 @@ helpDoc =
 operationalFailureCode :: Int
 operationalFailureCode = 1
 
--- | Failed to parse a source code file
-parseFailureCode :: Int
-parseFailureCode = 2
-
--- | Source code was parsed but cannot be formatted properly
-formattingFailureCode :: Int
-formattingFailureCode = 3
-
 -- | Formatted code differs from existing source code
 formattedCodeDiffersFailureCode :: Int
 formattedCodeDiffersFailureCode = 4

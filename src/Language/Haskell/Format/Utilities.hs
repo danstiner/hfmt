@@ -8,17 +8,13 @@ module Language.Haskell.Format.Utilities
 import System.IO.Unsafe
 
 import Language.Haskell.Format
-import Language.Haskell.Format.Types
 import Language.Haskell.Source.Enumerator
 
 import Conduit
 import Control.Monad
-import Data.Algorithm.Diff
 import Data.Algorithm.DiffContext
-import Data.Algorithm.DiffOutput
 import Data.List
 import Data.Maybe
-import Data.Monoid
 import Test.HUnit
 import Text.PrettyPrint
 
@@ -67,7 +63,7 @@ assertCheckResult result =
       whenMaybe
         (sourceChanged source reformatted)
         (showDiff source (reformattedSource reformatted))
-    showSuggestions source reformatted =
+    showSuggestions _ reformatted =
       whenMaybe
         (hasSuggestions reformatted)
         (concatMap show (suggestions reformatted))
@@ -90,9 +86,9 @@ readSourceFile :: FilePath -> IO HaskellSource
 readSourceFile filepath = HaskellSource filepath <$> readFile filepath
 
 checkFormatting :: Formatter -> HaskellSource -> CheckResult
-checkFormatting (Formatter format) source =
-  case format source of
-    Left error        -> InvalidCheckResult source error
+checkFormatting (Formatter doFormat) source =
+  case doFormat source of
+    Left err          -> InvalidCheckResult source err
     Right reformatted -> CheckResult source reformatted
 
 defaultFormatter :: IO Formatter

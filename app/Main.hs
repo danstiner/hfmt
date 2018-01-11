@@ -13,10 +13,6 @@ import Options
 import Types
 
 import Conduit
-import Control.Monad
-import Data.List
-import Data.Maybe
-import Data.Monoid
 import Options.Applicative.Extra          as OptApp
 import System.Directory
 import System.Exit
@@ -49,7 +45,7 @@ run options =
     handleFormatErrors = concatMapMC handleFormatError
     action = Actions.act options
     summarize =
-      anyC' (\(Formatted input source result) -> wasReformatted source result)
+      anyC' (\(Formatted _ source result) -> wasReformatted source result)
 
 sourcesFromPath :: FilePath -> Source IO SourceFile
 sourcesFromPath "-"  = yield StdinSource
@@ -62,9 +58,9 @@ readSource s@StdinSource =
   SourceFileWithContents s . HaskellSource "stdin" <$> getContents
 
 applyFormatter :: Formatter -> SourceFileWithContents -> FormatResult
-applyFormatter (Formatter format) (SourceFileWithContents file contents) =
-  case format contents of
-    Left error     -> Left (FormatError file error)
+applyFormatter (Formatter doFormat) (SourceFileWithContents file contents) =
+  case doFormat contents of
+    Left err       -> Left (FormatError file err)
     Right reformat -> Right (Formatted file contents reformat)
 
 handleFormatError :: FormatResult -> IO (Maybe Formatted)

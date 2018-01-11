@@ -6,14 +6,11 @@ module Path.Find
   ( findFileUp
   ) where
 
-import Control.Exception      (evaluate)
-import Control.Monad
 import Control.Monad.Catch
 import Control.Monad.IO.Class
 import Data.List
 import Path
 import Path.IO
-import System.IO.Error        (isPermissionError)
 
 -- | Find the location of a file matching the given predicate.
 findFileUp ::
@@ -23,15 +20,6 @@ findFileUp ::
   -> Maybe (Path Abs Dir) -- ^ Do not ascend above this directory.
   -> m (Maybe (Path Abs File)) -- ^ Absolute file path.
 findFileUp = findPathUp snd
-
--- | Find the location of a directory matching the given predicate.
-findDirUp ::
-     (MonadIO m, MonadThrow m)
-  => Path Abs Dir -- ^ Start here.
-  -> (Path Abs Dir -> Bool) -- ^ Predicate to match the directory.
-  -> Maybe (Path Abs Dir) -- ^ Do not ascend above this directory.
-  -> m (Maybe (Path Abs Dir)) -- ^ Absolute directory path.
-findDirUp = findPathUp fst
 
 -- | Find the location of a path matching the given predicate.
 findPathUp ::

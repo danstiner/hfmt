@@ -9,7 +9,6 @@ import qualified ExitCode
 import           Types
 
 import           Control.Applicative
-import           Data.List
 import           Data.Monoid
 import           Options.Applicative.Builder
 import           Options.Applicative.Common
