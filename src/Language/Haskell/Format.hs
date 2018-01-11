@@ -12,12 +12,10 @@ module Language.Haskell.Format
   , Reformatted(..)
   ) where
 
-import           Language.Haskell.Format.Definitions
-import qualified Language.Haskell.Format.HIndent     as HIndent
-import qualified Language.Haskell.Format.HLint       as HLint
-import qualified Language.Haskell.Format.Stylish     as Stylish
-
-import           Control.Applicative
+import qualified Language.Haskell.Format.HIndent as HIndent
+import qualified Language.Haskell.Format.HLint   as HLint
+import qualified Language.Haskell.Format.Stylish as Stylish
+import           Language.Haskell.Format.Types
 
 data Settings =
   Settings

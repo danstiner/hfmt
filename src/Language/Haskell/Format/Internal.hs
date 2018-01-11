@@ -3,9 +3,7 @@ module Language.Haskell.Format.Internal
   , mkSuggester
   ) where
 
-import Language.Haskell.Format.Definitions
-
-import Control.Applicative
+import Language.Haskell.Format.Types
 
 mkFormatter :: (HaskellSource -> Either String HaskellSource) -> Formatter
 mkFormatter f = Formatter (fmap (\source -> Reformatted source []) . f)

@@ -4,24 +4,20 @@ module Language.Haskell.Format.HIndent
   , defaultFormatter
   ) where
 
-import           Control.Applicative
 import           Data.ByteString.Builder
-import           Data.ByteString.Lazy                as L
-import           Data.Maybe                          ()
-import qualified Data.Text                           as Text
-import           Data.Text.Encoding                  as Encoding
-import           Data.Text.Lazy                      as TL
-import           Data.Text.Lazy.Builder
-import qualified Data.Yaml                           as Y
+import           Data.ByteString.Lazy             as L
+import qualified Data.Text                        as Text
+import           Data.Text.Encoding               as Encoding
+import qualified Data.Yaml                        as Y
 import           HIndent
 import           HIndent.Types
-import           Language.Haskell.Exts.Extension     (Extension)
+import           Language.Haskell.Exts.Extension  (Extension)
 import           Path
-import qualified Path.Find                           as Path
-import qualified Path.IO                             as Path
+import qualified Path.Find                        as Path
+import qualified Path.IO                          as Path
 
-import           Language.Haskell.Format.Definitions
 import           Language.Haskell.Format.Internal
+import           Language.Haskell.Format.Types
 
 data Settings =
   Settings Config

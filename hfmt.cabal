@@ -21,15 +21,16 @@ library
                      , Language.Haskell.Format.Utilities
                      , Language.Haskell.Source.Enumerator
   Other-Modules:     Language.Haskell.Format.Internal
-                     , Language.Haskell.Format.Definitions
                      , Language.Haskell.Format.HIndent
                      , Language.Haskell.Format.HLint
                      , Language.Haskell.Format.Stylish
+                     , Language.Haskell.Format.Types
                      , Path.Find
   GHC-Options:       -Wall
   Build-Depends:     base >= 4.8 && < 5
                      , bytestring
                      , Cabal
+                     , conduit-combinators
                      , Diff
                      , directory
                      , exceptions
@@ -40,8 +41,6 @@ library
                      , HUnit
                      , path
                      , path-io
-                     , pipes
-                     , pipes-parse
                      , pretty
                      , stylish-haskell == 0.8.*
                      , text
@@ -52,14 +51,16 @@ executable hfmt
   Hs-Source-Dirs:    app
   Main-Is:           Main.hs
   Other-Modules:     Actions
-                   , OptionsParser
+                   , ExitCode
+                   , Options
                    , Types
   GHC-Options:       -Wall
-  Build-Depends:     base == 4.*
+  Build-Depends:     base >= 4.8 && < 5
+                   , conduit-combinators
+                   , directory
                    , hfmt
                    , ansi-wl-pprint
                    , optparse-applicative
-                   , pipes
 
 test-suite self-formatting-test
   Type:              exitcode-stdio-1.0

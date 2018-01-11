@@ -1,39 +1,41 @@
 module Types
   ( Action(..)
-  , InputFile(..)
-  , InputFileWithSource(..)
-  , ErrorString
-  , ReformatResult(..)
-  , HaskellSourceFilePath
+  , FormatResult
+  , FormatError(..)
+  , Formatted(..)
   , HaskellSource(..)
+  , SourceFile(..)
+  , SourceFileWithContents(..)
   ) where
 
 import Language.Haskell.Format
-import Language.Haskell.Source.Enumerator (HaskellSourceFilePath)
 
 data Action
   = PrintDiffs
   | PrintSources
   | PrintFilePaths
   | WriteSources
+  deriving (Eq)
 
-data InputFile
-  = InputFilePath HaskellSourceFilePath
-  | InputFromStdIn
+data SourceFile
+  = SourceFilePath FilePath
+  | StdinSource
 
-instance Show InputFile where
-  show (InputFilePath path) = path
-  show InputFromStdIn       = "-"
+instance Show SourceFile where
+  show (SourceFilePath path) = path
+  show StdinSource           = "-"
 
-data InputFileWithSource =
-  InputFileWithSource InputFile
-                      HaskellSource
+data SourceFileWithContents =
+  SourceFileWithContents SourceFile
+                         HaskellSource
 
-type ErrorString = String
+type FormatResult = Either FormatError Formatted
 
-data ReformatResult
-  = InvalidReformat InputFile
-                    ErrorString
-  | Reformat InputFile
-             HaskellSource
-             Reformatted
+data FormatError =
+  FormatError SourceFile
+              String
+
+data Formatted =
+  Formatted SourceFile
+            HaskellSource
+            Reformatted

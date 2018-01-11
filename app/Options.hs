@@ -1,19 +1,19 @@
-module OptionsParser
+module Options
   ( Options
   , optAction
   , optPaths
   , parser
   ) where
 
-import Types
+import qualified ExitCode
+import           Types
 
-import Control.Applicative
-import Data.List
-import Data.Monoid
-import Options.Applicative.Builder
-import Options.Applicative.Common
-import Options.Applicative.Extra
-import Text.PrettyPrint.ANSI.Leijen hiding ((<$>), (<>))
+import           Control.Applicative
+import           Data.Monoid
+import           Options.Applicative.Builder
+import           Options.Applicative.Common
+import           Options.Applicative.Extra
+import           Text.PrettyPrint.ANSI.Leijen as Leijen hiding ((<$>), (<>))
 
 data Options = Options
   { optPrintDiffs     :: Bool
@@ -39,47 +39,45 @@ optionParser =
     (long "print-diffs" <> short 'd' <>
      help "If a file's formatting is different, print a diff.") <*>
   switch
-    (long "print-sources" <> short 's' <>
+    (long "print-sources" <> short 's' <> hidden <>
      help "If a file's formatting is different, print its source.") <*>
   switch
-    (long "print-paths" <> short 'l' <>
+    (long "print-paths" <> short 'l' <> hidden <>
      help "If a file's formatting is different, print its path.") <*>
   switch
-    (long "write-sources" <> short 'w' <>
+    (long "write-sources" <> short 'w' <> hidden <>
      help "If a file's formatting is different, overwrite it.") <*>
   many pathOption
   where
-    pathOption = strArgument (metavar "PATH" <> pathOptionHelp)
+    pathOption = strArgument (metavar "FILE" <> pathOptionHelp)
     pathOptionHelp =
       helpDoc $
       Just $
-      paragraph "Explicit paths to process." <> hardline <>
+      text "Explicit paths to process." <> line <>
       unorderdedList
         " - "
-        [ paragraph "A single '-' will process standard input."
-        , paragraph "Files will be processed directly."
-        , paragraph
+        [ text "A single '-' will process standard input."
+        , text "Files will be processed directly."
+        , text
             "Directories will be recursively searched for source files to process."
-        , paragraph
+        , text
             ".cabal files will be parsed and all specified source directories and files processed."
-        , paragraph
+        , text
             "If no paths are given, the current directory will be searched for .cabal files to process, if none are found the current directory will be recursively searched for source files to process."
         ]
 
-paragraph :: String -> Doc
-paragraph = mconcat . intersperse softline . map text . words
-
 unorderdedList :: String -> [Doc] -> Doc
-unorderdedList prefix =
-  encloseSep (text prefix) mempty (text prefix) . map (hang 0)
+unorderdedList prefix = vsep . map ((text prefix <>) . align)
 
 optionParserInfo :: ParserInfo Options
 optionParserInfo =
   info
     (helper <*> optionParser)
-    (fullDesc <> header "hfmt - format Haskell programs" <>
+    (fullDesc <> header "hfmt - Format Haskell programs" <>
      progDesc
-       "Operates on Haskell source files, reformatting them by applying suggestions from HLint, hindent, and stylish-haskell. Inspired by the gofmt utility.")
+       "Reformats Haskell source files by applying HLint, hindent, and stylish-haskell." <>
+     footerDoc (Just ExitCode.helpDoc) <>
+     failureCode ExitCode.operationalFailureCode)
 
 parser :: ParserInfo Options
 parser = optionParserInfo

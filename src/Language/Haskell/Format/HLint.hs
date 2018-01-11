@@ -3,16 +3,14 @@ module Language.Haskell.Format.HLint
   , suggester
   ) where
 
-import           Language.Haskell.Format.Definitions
 import           Language.Haskell.Format.Internal
+import           Language.Haskell.Format.Types
 
-import           Control.Applicative
-import           Language.Haskell.HLint3             (Classify, Hint,
-                                                      ParseError (..),
-                                                      ParseFlags, applyHints,
-                                                      parseModuleEx)
-import qualified Language.Haskell.HLint3             as HLint3
-import           System.IO.Unsafe                    (unsafePerformIO)
+import           Language.Haskell.HLint3          (Classify, Hint,
+                                                   ParseError (..), ParseFlags,
+                                                   applyHints, parseModuleEx)
+import qualified Language.Haskell.HLint3          as HLint3
+import           System.IO.Unsafe                 (unsafePerformIO)
 
 suggester :: (ParseFlags, [Classify], Hint) -> Formatter
 suggester = mkSuggester . hlint

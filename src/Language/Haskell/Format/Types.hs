@@ -1,13 +1,12 @@
-module Language.Haskell.Format.Definitions
+module Language.Haskell.Format.Types
   ( HaskellSource(..)
   , Reformatted(..)
   , Formatter(..)
   , Suggestion(..)
   ) where
 
-import Control.Applicative
 import Control.Monad
-import Data.Monoid
+import Data.Monoid   ((<>))
 
 type ErrorString = String
 
