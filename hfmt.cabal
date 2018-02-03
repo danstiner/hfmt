@@ -30,6 +30,7 @@ library
   Build-Depends:     base >= 4.8 && < 5
                      , bytestring
                      , Cabal
+                     , conduit
                      , conduit-combinators
                      , Diff
                      , directory
@@ -56,6 +57,7 @@ executable hfmt
                    , Types
   GHC-Options:       -Wall
   Build-Depends:     base >= 4.8 && < 5
+                   , conduit
                    , conduit-combinators
                    , directory
                    , hfmt
