@@ -20,15 +20,21 @@ import System.Exit
 main :: IO ()
 main = do
   options <- execParser Options.parser
-  formattedCodeDiffers <- run options
-  exitWith $ exitCode (optAction options) formattedCodeDiffers
+  changes <- run options
+  case changes of
+    Left err -> print err >> exitWith (ExitFailure 1)
+    Right changes' -> do
+      formattedCodeDiffers <-
+        runConduit $
+        yieldMany changes' .| mapMC (Actions.act options) .|
+        anyC' (\(Formatted _ source result) -> wasReformatted source result)
+      exitWith $ exitCode (optAction options) formattedCodeDiffers
 
-run :: Options -> IO Bool
-run options =
-  runConduit $
-  sources .| mapMC readSource .| mapMC formatSource .| handleFormatErrors .|
-  mapMC action .|
-  summarize
+run :: Options -> IO (Either FormatError [Formatted])
+run options = do
+  changesE <-
+    runConduit $ sources .| mapMC readSource .| mapMC formatSource .| sinkList
+  return $ sequence changesE
   where
     paths = do
       let explicitPaths = optPaths options
@@ -42,10 +48,6 @@ run options =
     formatSource source = do
       formatter <- defaultFormatter
       return $ applyFormatter formatter source
-    handleFormatErrors = concatMapMC handleFormatError
-    action = Actions.act options
-    summarize =
-      anyC' (\(Formatted _ source result) -> wasReformatted source result)
 
 sourcesFromPath :: FilePath -> Source IO SourceFile
 sourcesFromPath "-"  = yield StdinSource
@@ -62,14 +64,6 @@ applyFormatter (Formatter doFormat) (SourceFileWithContents file contents) =
   case doFormat contents of
     Left err       -> Left (FormatError file err)
     Right reformat -> Right (Formatted file contents reformat)
-
-handleFormatError :: FormatResult -> IO (Maybe Formatted)
-handleFormatError (Left err)        = printFormatError err >> return Nothing
-handleFormatError (Right formatted) = return $ Just formatted
-
-printFormatError :: FormatError -> IO ()
-printFormatError (FormatError input errorString) =
-  putStrLn ("Error reformatting " ++ show input ++ ": " ++ errorString)
 
 -- | Check that at least one value in the stream returns True.
 --
