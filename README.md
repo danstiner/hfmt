@@ -33,26 +33,27 @@ Overwrite files with formatting suggestions:
     λ hfmt --help
     hfmt - format Haskell programs
 
-    Usage: hfmt.exe [-d|--print-diffs] [-s|--print-sources] [-l|--print-paths]
-                    [-w|--write-sources] [PATH]
-      Operates on Haskell source files, reformatting them by applying suggestions
-      from HLint, hindent, and stylish-haskell. Inspired by the gofmt utility.
+    Usage: hfmt [-d|--print-diffs] [FILE]
+      Reformats Haskell source files by applying HLint, hindent, and
+      stylish-haskell.
 
     Available options:
       -h,--help                Show this help text
       -d,--print-diffs         If a file's formatting is different, print a diff.
       -s,--print-sources       If a file's formatting is different, print its
-                               source.
+                              source.
       -l,--print-paths         If a file's formatting is different, print its path.
       -w,--write-sources       If a file's formatting is different, overwrite it.
-      PATH                     Explicit paths to process.
+      FILE                     Explicit paths to process.
                                 - A single '-' will process standard input.
                                 - Files will be processed directly.
-                                - Directories will be recursively searched for
-                                  source files to process.
-                                - .cabal files will be parsed and all specified
-                                  source directories and files processed.
-                                - If no paths are given, the current directory will
-                                  be searched for .cabal files to process, if none
-                                  are found the current directory will be
-                                  recursively searched for source files to process.
+                                - Directories will be recursively searched for source files to process.
+                                - .cabal files will be parsed and all specified source directories and files processed.
+                                - If no paths are given, the current directory will be searched for .cabal files to process, if none are found the current directory will be recursively searched for source files to process.
+
+    Exit Codes:
+      0 = No error
+      1 = Encountered I/O or other operational error
+      2 = Failed to parse a source code file
+      3 = Source code was parsed but cannot be formatted properly
+      4 = Formatted code differs from existing source (--print-diffs only)
