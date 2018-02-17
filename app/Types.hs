@@ -35,6 +35,10 @@ data FormatError =
   FormatError SourceFile
               String
 
+instance Show FormatError where
+  show (FormatError input errorString) =
+    "Error reformatting " ++ show input ++ ": " ++ errorString
+
 data Formatted =
   Formatted SourceFile
             HaskellSource
