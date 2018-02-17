@@ -2,6 +2,7 @@ module ExitCode
   ( exitCode
   , helpDoc
   , operationalFailureCode
+  , sourceParseFailureCode
   ) where
 
 import Types
@@ -38,6 +39,10 @@ helpDoc =
 -- | Encountered I/O or other operational error
 operationalFailureCode :: Int
 operationalFailureCode = 1
+
+-- | Failed to parse a source code file
+sourceParseFailureCode :: Int
+sourceParseFailureCode = 2
 
 -- | Formatted code differs from existing source code
 formattedCodeDiffersFailureCode :: Int

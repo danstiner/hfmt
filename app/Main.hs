@@ -22,7 +22,7 @@ main = do
   options <- execParser Options.parser
   changes <- run options
   case changes of
-    Left err -> print err >> exitWith (ExitFailure 1)
+    Left err -> print err >> exitWith (ExitFailure sourceParseFailureCode)
     Right changes' -> do
       formattedCodeDiffers <-
         runConduit $
