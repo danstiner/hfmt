@@ -29,7 +29,7 @@ defaultFormatter = formatter <$> autoSettings
 autoSettings :: IO Settings
 autoSettings = do
   config <- getConfig
-  return (Settings config Nothing)
+  return $ Settings config $ Just defaultExtensions
 
 -- | Read config from a config file, or return 'defaultConfig'.
 getConfig :: IO Config
