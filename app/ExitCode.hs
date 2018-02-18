@@ -17,8 +17,8 @@ import Text.PrettyPrint.ANSI.Leijen
 -- assume we are being run in a context where non-zero exit indicates
 -- failure of the tool to operate properly.
 exitCode :: Action -> Bool -> ExitCode
-exitCode action formattedCodeDiffers =
-  if formattedCodeDiffers && failOnDifferences
+exitCode action hadDifferences =
+  if hadDifferences && failOnDifferences
     then ExitFailure formattedCodeDiffersFailureCode
     else ExitSuccess
   where

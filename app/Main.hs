@@ -24,11 +24,11 @@ main = do
   case changes of
     Left err -> print err >> exitWith (ExitFailure sourceParseFailureCode)
     Right changes' -> do
-      formattedCodeDiffers <-
+      hadDifferences <-
         runConduit $
         yieldMany changes' .| mapMC (Actions.act options) .|
         anyC' (\(Formatted _ source result) -> wasReformatted source result)
-      exitWith $ exitCode (optAction options) formattedCodeDiffers
+      exitWith $ exitCode (optAction options) hadDifferences
 
 run :: Options -> IO (Either FormatError [Formatted])
 run options = do
