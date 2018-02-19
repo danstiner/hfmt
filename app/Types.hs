@@ -4,6 +4,7 @@ module Types
   , FormatError(..)
   , Formatted(..)
   , HaskellSource(..)
+  , RunResult(..)
   , SourceFile(..)
   , SourceFileWithContents(..)
   ) where
@@ -43,3 +44,17 @@ data Formatted =
   Formatted SourceFile
             HaskellSource
             Reformatted
+
+data RunResult
+  = OperationalFailure
+  | SourceParseFailure
+  | HadDifferences
+  | NoDifferences
+
+instance Monoid RunResult where
+  mempty = NoDifferences
+  x `mappend` NoDifferences = x
+  NoDifferences `mappend` x = x
+  OperationalFailure `mappend` _ = OperationalFailure
+  SourceParseFailure `mappend` _ = SourceParseFailure
+  HadDifferences `mappend` _ = HadDifferences

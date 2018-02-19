@@ -16,38 +16,44 @@ import Conduit
 import Options.Applicative.Extra          as OptApp
 import System.Directory
 import System.Exit
+import System.IO
 
 main :: IO ()
 main = do
   options <- execParser Options.parser
-  changes <- run options
-  case changes of
-    Left err -> print err >> exitWith (ExitFailure sourceParseFailureCode)
-    Right changes' -> do
-      formattedCodeDiffers <-
-        runConduit $
-        yieldMany changes' .| mapMC (Actions.act options) .|
-        anyC' (\(Formatted _ source result) -> wasReformatted source result)
-      exitWith $ exitCode (optAction options) formattedCodeDiffers
+  result <- run options
+  exitWith $ exitCode (optAction options) result
 
-run :: Options -> IO (Either FormatError [Formatted])
-run options = do
-  changesE <-
-    runConduit $ sources .| mapMC readSource .| mapMC formatSource .| sinkList
-  return $ sequence changesE
+run :: Options -> IO RunResult
+run opt =
+  runConduit $
+  sources opt .| mapMC readSource .| mapMC formatSource .| mapMC doAction .|
+  foldMapMC toRunResult
   where
-    paths = do
-      let explicitPaths = optPaths options
+    formatSource source = do
+      formatter <- defaultFormatter
+      return $ applyFormatter formatter source
+    doAction :: FormatResult -> IO FormatResult
+    doAction = bimapM return (Actions.act opt)
+    toRunResult :: FormatResult -> IO RunResult
+    toRunResult (Left err) = do
+      hPrint stderr (show err)
+      return SourceParseFailure
+    toRunResult (Right (Formatted _ source result)) =
+      if wasReformatted source result
+        then return HadDifferences
+        else return NoDifferences
+
+sources :: Options -> Source IO SourceFile
+sources opt = lift paths >>= mapM_ sourcesFromPath
+  where
+    explicitPaths = optPaths opt
+    paths =
       if null explicitPaths
         then do
           currentPath <- getCurrentDirectory
           return [currentPath]
         else return explicitPaths
-    sources :: Source IO SourceFile
-    sources = lift paths >>= mapM_ sourcesFromPath
-    formatSource source = do
-      formatter <- defaultFormatter
-      return $ applyFormatter formatter source
 
 sourcesFromPath :: FilePath -> Source IO SourceFile
 sourcesFromPath "-"  = yield StdinSource
@@ -65,11 +71,6 @@ applyFormatter (Formatter doFormat) (SourceFileWithContents file contents) =
     Left err       -> Left (FormatError file err)
     Right reformat -> Right (Formatted file contents reformat)
 
--- | Check that at least one value in the stream returns True.
---
--- Does not shortcut, entire stream is always consumed
-anyC' :: Monad m => (a -> Bool) -> Consumer a m Bool
-anyC' f = do
-  result <- anyC f -- Check for at least one value, may shortcut
-  sinkNull -- consume any remaining input skipped by a shortcut
-  return result
+bimapM :: Monad m => (a -> m c) -> (b -> m d) -> Either a b -> m (Either c d)
+bimapM f _ (Left a)  = Left <$> f a
+bimapM _ g (Right b) = Right <$> g b
