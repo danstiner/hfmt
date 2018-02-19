@@ -13,7 +13,6 @@ import Options
 import Types
 
 import Conduit
-import Data.Bitraversable
 import Options.Applicative.Extra          as OptApp
 import System.Directory
 import System.Exit
@@ -35,7 +34,7 @@ run opt =
       formatter <- defaultFormatter
       return $ applyFormatter formatter source
     doAction :: FormatResult -> IO FormatResult
-    doAction = bitraverse return (Actions.act opt)
+    doAction = bimapM return (Actions.act opt)
     toRunResult :: FormatResult -> IO RunResult
     toRunResult (Left err) = do
       hPrint stderr (show err)
@@ -71,3 +70,7 @@ applyFormatter (Formatter doFormat) (SourceFileWithContents file contents) =
   case doFormat contents of
     Left err       -> Left (FormatError file err)
     Right reformat -> Right (Formatted file contents reformat)
+
+bimapM :: Monad m => (a -> m c) -> (b -> m d) -> Either a b -> m (Either c d)
+bimapM f _ (Left a)  = Left <$> f a
+bimapM _ g (Right b) = Right <$> g b
