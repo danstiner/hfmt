@@ -16,13 +16,12 @@ import Text.PrettyPrint.ANSI.Leijen
 -- should exit with failure if any format differences were found. Otherwise
 -- assume we are being run in a context where non-zero exit indicates
 -- failure of the tool to operate properly.
-exitCode :: Action -> Bool -> ExitCode
-exitCode action hadDifferences =
-  if hadDifferences && failOnDifferences
-    then ExitFailure formattedCodeDiffersFailureCode
-    else ExitSuccess
-  where
-    failOnDifferences = action == PrintDiffs
+exitCode :: Action -> RunResult -> ExitCode
+exitCode _ NoDifferences = ExitSuccess
+exitCode PrintDiffs HadDifferences = ExitFailure formattedCodeDiffersFailureCode
+exitCode _ HadDifferences = ExitSuccess
+exitCode _ SourceParseFailure = ExitFailure sourceParseFailureCode
+exitCode _ OperationalFailure = ExitFailure operationalFailureCode
 
 helpDoc :: Doc
 helpDoc =

@@ -4,51 +4,57 @@ module Main
   ( main
   ) where
 
-import           Actions
-import           ExitCode
-import           Language.Haskell.Format
-import           Language.Haskell.Format.Utilities
-import           Language.Haskell.Source.Enumerator
-import           Options
-import           Types
+import Actions
+import ExitCode
+import Language.Haskell.Format
+import Language.Haskell.Format.Utilities
+import Language.Haskell.Source.Enumerator
+import Options
+import Types
 
-import           Conduit
-import qualified Data.Conduit.Combinators           as C
-import           Options.Applicative.Extra          as OptApp
-import           System.Directory
-import           System.Exit
+import Conduit
+import Data.Bitraversable
+import Options.Applicative.Extra          as OptApp
+import System.Directory
+import System.Exit
+import System.IO
 
 main :: IO ()
 main = do
   options <- execParser Options.parser
-  changes <- run options
-  case changes of
-    Left err -> print err >> exitWith (ExitFailure sourceParseFailureCode)
-    Right changes' -> do
-      hadDifferences <-
-        runConduit $
-        yieldMany changes' .| mapMC (Actions.act options) .|
-        anyC' (\(Formatted _ source result) -> wasReformatted source result)
-      exitWith $ exitCode (optAction options) hadDifferences
+  result <- run options
+  exitWith $ exitCode (optAction options) result
 
-run :: Options -> IO (Either FormatError [Formatted])
-run options = do
-  changesE <-
-    runConduit $ sources .| mapMC readSource .| mapMC formatSource .| sinkList
-  return $ sequence changesE
+run :: Options -> IO RunResult
+run opt =
+  runConduit $
+  sources opt .| mapMC readSource .| mapMC formatSource .| mapMC doAction .|
+  foldMapMC toRunResult
   where
-    paths = do
-      let explicitPaths = optPaths options
+    formatSource source = do
+      formatter <- defaultFormatter
+      return $ applyFormatter formatter source
+    doAction :: FormatResult -> IO FormatResult
+    doAction = bitraverse return (Actions.act opt)
+    toRunResult :: FormatResult -> IO RunResult
+    toRunResult (Left err) = do
+      hPrint stderr (show err)
+      return SourceParseFailure
+    toRunResult (Right (Formatted _ source result)) =
+      if wasReformatted source result
+        then return HadDifferences
+        else return NoDifferences
+
+sources :: Options -> Source IO SourceFile
+sources opt = lift paths >>= mapM_ sourcesFromPath
+  where
+    explicitPaths = optPaths opt
+    paths =
       if null explicitPaths
         then do
           currentPath <- getCurrentDirectory
           return [currentPath]
         else return explicitPaths
-    sources :: Source IO SourceFile
-    sources = lift paths >>= mapM_ sourcesFromPath
-    formatSource source = do
-      formatter <- defaultFormatter
-      return $ applyFormatter formatter source
 
 sourcesFromPath :: FilePath -> Source IO SourceFile
 sourcesFromPath "-"  = yield StdinSource
@@ -65,12 +71,3 @@ applyFormatter (Formatter doFormat) (SourceFileWithContents file contents) =
   case doFormat contents of
     Left err       -> Left (FormatError file err)
     Right reformat -> Right (Formatted file contents reformat)
-
--- | Check that at least one value in the stream returns True.
---
--- Does not shortcut, entire stream is always consumed
-anyC' :: Monad m => (a -> Bool) -> Consumer a m Bool
-anyC' f = do
-  result <- anyC f -- Check for at least one value, may shortcut
-  sinkNull -- consume any remaining input skipped by a shortcut
-  return result
