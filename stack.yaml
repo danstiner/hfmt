@@ -1,5 +1,6 @@
 flags: {}
 packages:
 - '.'
-extra-deps: []
-resolver: lts-10.5
+extra-deps:
+  - stylish-haskell-0.9.2.0
+resolver: lts-11.7
