@@ -5,18 +5,18 @@ module Language.Haskell.Format.Utilities
   , wasReformatted
   ) where
 
-import System.IO.Unsafe
+import           System.IO.Unsafe
 
-import Language.Haskell.Format
-import Language.Haskell.Source.Enumerator
+import           Language.Haskell.Format
+import           Language.Haskell.Source.Enumerator
 
-import Conduit
-import Control.Monad
-import Data.Algorithm.DiffContext
-import Data.List
-import Data.Maybe
-import Test.HUnit
-import Text.PrettyPrint
+import           Conduit
+import           Control.Monad
+import           Data.Algorithm.DiffContext
+import           Data.List
+import           Data.Maybe
+import           Test.HUnit
+import           Text.PrettyPrint
 
 type ErrorString = String
 
@@ -77,7 +77,7 @@ showDiff (HaskellSource _ a) (HaskellSource _ b) = render (toDoc diff)
     diff = getContextDiff linesOfContext (lines a) (lines b)
     linesOfContext = 1
 
-check :: Formatter -> FilePath -> Source IO CheckResult
+check :: Formatter -> FilePath -> ConduitT () CheckResult IO ()
 check formatter filepath =
   enumeratePath filepath .| mapMC readSourceFile .|
   mapC (checkFormatting formatter)
