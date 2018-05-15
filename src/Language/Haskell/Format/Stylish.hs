@@ -3,10 +3,10 @@ module Language.Haskell.Format.Stylish
   , formatter
   ) where
 
-import           Language.Haskell.Stylish         as Stylish
+import Language.Haskell.Stylish         as Stylish
 
-import           Language.Haskell.Format.Internal
-import           Language.Haskell.Format.Types
+import Language.Haskell.Format.Internal
+import Language.Haskell.Format.Types
 
 newtype Settings =
   Settings Stylish.Config

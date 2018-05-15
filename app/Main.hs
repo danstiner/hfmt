@@ -4,19 +4,19 @@ module Main
   ( main
   ) where
 
-import           Actions
-import           ExitCode
-import           Language.Haskell.Format
-import           Language.Haskell.Format.Utilities
-import           Language.Haskell.Source.Enumerator
-import           Options
-import           Types
+import Actions
+import ExitCode
+import Language.Haskell.Format
+import Language.Haskell.Format.Utilities
+import Language.Haskell.Source.Enumerator
+import Options
+import Types
 
-import           Conduit
-import           Options.Applicative.Extra          as OptApp
-import           System.Directory
-import           System.Exit
-import           System.IO
+import Conduit
+import Options.Applicative.Extra          as OptApp
+import System.Directory
+import System.Exit
+import System.IO
 
 main :: IO ()
 main = do
