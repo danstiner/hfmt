@@ -44,7 +44,7 @@ run opt =
         then return HadDifferences
         else return NoDifferences
 
-sources :: Options -> Source IO SourceFile
+sources :: Options -> ConduitT () SourceFile IO ()
 sources opt = lift paths >>= mapM_ sourcesFromPath
   where
     explicitPaths = optPaths opt
@@ -55,7 +55,7 @@ sources opt = lift paths >>= mapM_ sourcesFromPath
           return [currentPath]
         else return explicitPaths
 
-sourcesFromPath :: FilePath -> Source IO SourceFile
+sourcesFromPath :: FilePath -> ConduitT () SourceFile IO ()
 sourcesFromPath "-"  = yield StdinSource
 sourcesFromPath path = enumeratePath path .| mapC SourceFilePath
 
