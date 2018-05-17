@@ -12,10 +12,10 @@ import qualified Distribution.Verbosity                as Verbosity
 import           System.Directory
 import           System.FilePath
 
-enumeratePath :: FilePath -> Source IO FilePath
+enumeratePath :: FilePath -> ConduitT () FilePath IO ()
 enumeratePath path = enumPath path .| mapC normalise
 
-enumPath :: FilePath -> Source IO FilePath
+enumPath :: FilePath -> ConduitT () FilePath IO ()
 enumPath path = do
   isDirectory <- lift $ doesDirectoryExist path
   case isDirectory of
@@ -26,7 +26,7 @@ enumPath path = do
       | hasHaskellExtension path -> yield path
     False -> return ()
 
-enumPackage :: FilePath -> Source IO FilePath
+enumPackage :: FilePath -> ConduitT () FilePath IO ()
 enumPackage cabalFile = readPackage cabalFile >>= expandPaths
   where
     readPackage = lift . readPackageDescription Verbosity.silent
@@ -34,7 +34,7 @@ enumPackage cabalFile = readPackage cabalFile >>= expandPaths
     packageDir = dropFileName cabalFile
     mkFull = (packageDir </>)
 
-enumDirectory :: FilePath -> Source IO FilePath
+enumDirectory :: FilePath -> ConduitT () FilePath IO ()
 enumDirectory path = do
   contents <- lift $ getDirectoryContentFullPaths path
   cabalFiles <- lift $ filterM isCabalFile contents

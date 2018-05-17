@@ -77,7 +77,7 @@ showDiff (HaskellSource _ a) (HaskellSource _ b) = render (toDoc diff)
     diff = getContextDiff linesOfContext (lines a) (lines b)
     linesOfContext = 1
 
-check :: Formatter -> FilePath -> Source IO CheckResult
+check :: Formatter -> FilePath -> ConduitT () CheckResult IO ()
 check formatter filepath =
   enumeratePath filepath .| mapMC readSourceFile .|
   mapC (checkFormatting formatter)
