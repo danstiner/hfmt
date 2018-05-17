@@ -13,7 +13,7 @@ category:            Language
 build-type:          Simple
 extra-source-files:  README.md, .stylish-haskell.yaml
 cabal-version:       >=1.9.2
-tested-with:         GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.2, GHC == 8.5
+tested-with:         GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.2
 
 library
   Hs-Source-Dirs:    src
