@@ -10,6 +10,7 @@ module Types
   ) where
 
 import Language.Haskell.Format
+import Data.Semigroup (Semigroup, (<>))
 
 data Action
   = PrintDiffs
@@ -51,10 +52,13 @@ data RunResult
   | HadDifferences
   | NoDifferences
 
+instance Semigroup RunResult where
+  x <> NoDifferences = x
+  NoDifferences <> x = x
+  OperationalFailure <> _ = OperationalFailure
+  SourceParseFailure <> _ = SourceParseFailure
+  HadDifferences <> _ = HadDifferences
+
 instance Monoid RunResult where
   mempty = NoDifferences
-  x `mappend` NoDifferences = x
-  NoDifferences `mappend` x = x
-  OperationalFailure `mappend` _ = OperationalFailure
-  SourceParseFailure `mappend` _ = SourceParseFailure
-  HadDifferences `mappend` _ = HadDifferences
+  mappend = (<>)

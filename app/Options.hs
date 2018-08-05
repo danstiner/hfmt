@@ -7,9 +7,8 @@ module Options
 
 import qualified ExitCode
 import           Types
-
 import           Control.Applicative
-import           Data.Monoid
+import           Data.Monoid ((<>))
 import           Options.Applicative.Builder
 import           Options.Applicative.Common
 import           Options.Applicative.Extra
