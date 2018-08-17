@@ -5,14 +5,14 @@ module Options
   , parser
   ) where
 
-import qualified ExitCode
-import           Types
 import           Control.Applicative
-import           Data.Monoid ((<>))
+import           Data.Monoid                  ((<>))
+import qualified ExitCode
 import           Options.Applicative.Builder
 import           Options.Applicative.Common
 import           Options.Applicative.Extra
 import           Text.PrettyPrint.ANSI.Leijen as Leijen hiding ((<$>), (<>))
+import           Types
 
 data Options = Options
   { optPrintDiffs     :: Bool

@@ -8,7 +8,7 @@ import           Control.Monad
 import           Data.List
 import           Distribution.PackageDescription
 import           Distribution.PackageDescription.Parsec
-import qualified Distribution.Verbosity                as Verbosity
+import qualified Distribution.Verbosity                 as Verbosity
 import           System.Directory
 import           System.FilePath
 

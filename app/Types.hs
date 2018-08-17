@@ -9,8 +9,8 @@ module Types
   , SourceFileWithContents(..)
   ) where
 
+import Data.Semigroup          (Semigroup, (<>))
 import Language.Haskell.Format
-import Data.Semigroup (Semigroup, (<>))
 
 data Action
   = PrintDiffs
