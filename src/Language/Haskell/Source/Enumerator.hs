@@ -7,7 +7,7 @@ import           Control.Applicative
 import           Control.Monad
 import           Data.List
 import           Distribution.PackageDescription
-import           Distribution.PackageDescription.Parse
+import           Distribution.PackageDescription.Parsec
 import qualified Distribution.Verbosity                as Verbosity
 import           System.Directory
 import           System.FilePath
@@ -29,7 +29,7 @@ enumPath path = do
 enumPackage :: FilePath -> Source IO FilePath
 enumPackage cabalFile = readPackage cabalFile >>= expandPaths
   where
-    readPackage = lift . readPackageDescription Verbosity.silent
+    readPackage = lift . readGenericPackageDescription Verbosity.silent
     expandPaths = mapM_ (enumPath . mkFull) . sourcePaths
     packageDir = dropFileName cabalFile
     mkFull = (packageDir </>)

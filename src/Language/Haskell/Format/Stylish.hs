@@ -14,7 +14,7 @@ newtype Settings =
 autoSettings :: IO Settings
 autoSettings = do
   path <- Stylish.configFilePath verbose Nothing
-  config <- Stylish.loadConfig verbose (Just path)
+  config <- Stylish.loadConfig verbose path
   return (Settings config)
   where
     verbose = Stylish.makeVerbose False

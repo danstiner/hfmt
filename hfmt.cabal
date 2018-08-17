@@ -1,3 +1,4 @@
+cabal-version:       2.2
 name:                hfmt
 version:             0.2.1
 synopsis:            Haskell source code formatter
@@ -12,7 +13,6 @@ bug-reports:         http://github.com/danstiner/hfmt/issues
 category:            Language
 build-type:          Simple
 extra-source-files:  README.md, .stylish-haskell.yaml
-cabal-version:       >=1.9.2
 tested-with:         GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.2
 
 library
@@ -29,21 +29,21 @@ library
   GHC-Options:       -Wall
   Build-Depends:     base >= 4.8 && < 5
                      , bytestring
-                     , Cabal <= 2.0.1.1
+                     , Cabal >= 2.2
                      , conduit
                      , conduit-combinators
                      , Diff
                      , directory
                      , exceptions
                      , filepath
-                     , haskell-src-exts < 1.20
+                     , haskell-src-exts
                      , hindent == 5.*
                      , hlint == 2.*
                      , HUnit
                      , path
                      , path-io
                      , pretty
-                     , stylish-haskell == 0.8.*
+                     , stylish-haskell == 0.9.*
                      , text
                      , transformers
                      , yaml

@@ -1,7 +1,6 @@
 flags: {}
 packages:
 - '.'
-extra-deps: []
-resolver: lts-12.0
+resolver: lts-12.6
+extra-deps: 
   - hindent-5.2.7
-  - Cabal-2.0.1.1
