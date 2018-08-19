@@ -4,6 +4,7 @@ hfmt
 [![Hackage](https://img.shields.io/hackage/v/hfmt.svg)](https://hackage.haskell.org/package/hfmt)
 [![license](https://img.shields.io/github/license/danstiner/hfmt.svg)](https://github.com/danstiner/hfmt/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/danstiner/hfmt.svg?branch=master)](https://travis-ci.org/danstiner/hfmt)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdanstiner%2Fhfmt.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdanstiner%2Fhfmt?ref=badge_shield)
 
 hfmt is a tool for formatting Haskell programs. Currently it is simply a gofmt style wrapper of the excellent tools [hlint](https://github.com/ndmitchell/hlint/blob/master/README.md), [hindent](https://github.com/chrisdone/hindent#readme), and [stylish-haskell](https://github.com/jaspervdj/stylish-haskell#readme).
 
@@ -57,3 +58,7 @@ Overwrite files with formatting suggestions:
       2 = Failed to parse a source code file
       3 = Source code was parsed but cannot be formatted properly
       4 = Formatted code differs from existing source (--print-diffs only)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdanstiner%2Fhfmt.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdanstiner%2Fhfmt?ref=badge_large)
