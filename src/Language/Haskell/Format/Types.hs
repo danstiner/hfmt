@@ -6,7 +6,7 @@ module Language.Haskell.Format.Types
   ) where
 
 import Control.Monad
-import Data.Monoid   ((<>))
+import Data.Semigroup (Semigroup, (<>))
 
 type ErrorString = String
 
@@ -26,18 +26,24 @@ data Reformatted = Reformatted
   , suggestions       :: [Suggestion]
   }
 
+instance Semigroup Reformatted where
+  (Reformatted _ suggestionsA) <> (Reformatted sourceB suggestionsB) =
+    Reformatted sourceB (suggestionsA <> suggestionsB)
+
 instance Monoid Reformatted where
   mempty = Reformatted undefined []
-  (Reformatted _ suggestionsA) `mappend` (Reformatted sourceB suggestionsB) =
-    Reformatted sourceB (suggestionsA <> suggestionsB)
+  mappend = (<>)
 
 newtype Formatter = Formatter
   { unFormatter :: HaskellSource -> Either ErrorString Reformatted
   }
 
+instance Semigroup Formatter where
+  (Formatter f) <> (Formatter g) = Formatter (asReformatter g <=< f)
+
 instance Monoid Formatter where
   mempty = Formatter (\source -> Right (Reformatted source []))
-  (Formatter f) `mappend` (Formatter g) = Formatter (asReformatter g <=< f)
+  mappend = (<>)
 
 asReformatter ::
      (HaskellSource -> Either ErrorString Reformatted)
