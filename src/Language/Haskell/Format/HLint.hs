@@ -27,7 +27,7 @@ hlint (flags, classify, hint) (HaskellSource filepath source) =
     ideas m = applyHints classify hint [m]
 
 autoSettings :: IO (ParseFlags, [Classify], Hint)
-autoSettings = HLint3.autoSettings
+autoSettings = HLint3.argsSettings []
 
 ideaToSuggestion :: HLint3.Idea -> Suggestion
 ideaToSuggestion = Suggestion . show
