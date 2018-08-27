@@ -1,5 +1,5 @@
 name:                hfmt
-version:             0.2.2
+version:             0.2.2.1
 synopsis:            Haskell source code formatter
 description:         Inspired by gofmt. Built using hlint, hindent, and stylish-haskell.
 license:             MIT
@@ -13,7 +13,7 @@ category:            Language
 build-type:          Simple
 extra-source-files:  README.md, .stylish-haskell.yaml
 cabal-version:       >=1.9.2
-tested-with:         GHC == 8.0.2, GHC == 8.2.2, GHC == 8.5
+tested-with:         GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.2, GHC == 8.5
 
 library
   Hs-Source-Dirs:    src

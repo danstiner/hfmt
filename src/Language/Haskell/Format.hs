@@ -32,8 +32,18 @@ hindent _ = HIndent.formatter <$> HIndent.autoSettings
 stylish :: Settings -> IO Formatter
 stylish _ = Stylish.formatter <$> Stylish.autoSettings
 
+errorFor :: String -> Formatter -> Formatter
+errorFor name (Formatter formatter) =
+  Formatter $ \source -> prefixName (formatter source)
+  where
+    prefixName (Left err) = Left ("Error in " ++ name ++ ": " ++ err)
+    prefixName (Right a)  = Right a
+
 formatters :: Settings -> IO [Formatter]
-formatters s = sequence [hlint s, hindent s, stylish s]
+formatters s = traverse (\(name, f) -> fmap (errorFor name) (f s)) named
+  where
+    named =
+      [("hlint", hlint), ("hindent", hindent), ("stylish-haskell", stylish)]
 
 format :: Formatter -> HaskellSource -> Either String Reformatted
 format = unFormatter

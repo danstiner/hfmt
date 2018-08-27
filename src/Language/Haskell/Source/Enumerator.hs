@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 module Language.Haskell.Source.Enumerator
   ( enumeratePath
   ) where
@@ -7,11 +9,20 @@ import           Control.Applicative
 import           Control.Monad
 import           Data.List
 import           Distribution.PackageDescription
-import           Distribution.PackageDescription.Parse
-import qualified Distribution.Verbosity                as Verbosity
+import qualified Distribution.Verbosity                 as Verbosity
 import           System.Directory
 import           System.FilePath
+#if MIN_VERSION_Cabal(2,2,0)
+import           Distribution.PackageDescription.Parsec (readGenericPackageDescription)
+#elif MIN_VERSION_Cabal(2,0,0)
+import           Distribution.PackageDescription.Parse  (readGenericPackageDescription)
+#else
+import           Distribution.PackageDescription.Parse  (readPackageDescription)
 
+readGenericPackageDescription ::
+     Verbosity.Verbosity -> FilePath -> IO GenericPackageDescription
+readGenericPackageDescription = readPackageDescription
+#endif
 enumeratePath :: FilePath -> ConduitT () FilePath IO ()
 enumeratePath path = enumPath path .| mapC normalise
 
@@ -29,7 +40,7 @@ enumPath path = do
 enumPackage :: FilePath -> ConduitT () FilePath IO ()
 enumPackage cabalFile = readPackage cabalFile >>= expandPaths
   where
-    readPackage = lift . readPackageDescription Verbosity.silent
+    readPackage = lift . readGenericPackageDescription Verbosity.silent
     expandPaths = mapM_ (enumPath . mkFull) . sourcePaths
     packageDir = dropFileName cabalFile
     mkFull = (packageDir </>)
