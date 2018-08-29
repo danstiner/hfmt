@@ -1,0 +1,77 @@
+name:                hfmt
+version:             0.2.3.1
+synopsis:            Haskell source code formatter
+description:         Inspired by gofmt. Built using hlint, hindent, and stylish-haskell.
+license:             MIT
+license-file:        LICENSE
+author:              Daniel Stiner
+maintainer:          Daniel Stiner <daniel.stiner@gmail.com>
+stability:           Experimental
+github:              danstiner/hfmt
+category:            Language
+tested-with:         GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.2, GHC == 8.5
+
+extra-source-files:
+  - .stylish-haskell.yaml
+  - LICENSE
+  - README.md
+  - stack.yaml
+
+ghc-options: -Wall
+
+dependencies:
+  - base >= 4.8 && < 5
+  - bytestring
+  - Cabal
+  - conduit
+  - conduit-combinators
+  - Diff
+  - directory
+  - exceptions
+  - filepath
+  - haskell-src-exts > 1.20
+  - hindent == 5.*
+  - hlint == 2.*
+  - HUnit
+  - path
+  - path-io
+  - pretty
+  - stylish-haskell == 0.9.*
+  - text
+  - transformers
+  - yaml
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Language.Haskell.Format
+    - Language.Haskell.Format.Utilities
+    - Language.Haskell.Source.Enumerator
+
+executable:
+  main: Main.hs
+  source-dirs: app
+  dependencies:
+    - ansi-wl-pprint
+    - hfmt
+    - optparse-applicative
+
+tests:
+  pure:
+    main: Spec.hs
+    source-dirs:
+      - test/pure
+    dependencies:
+      - hfmt
+      - HUnit
+      - test-framework
+      - test-framework-hunit
+  self-formatting-test:
+    main: Spec.hs
+    source-dirs:
+      - test/self-formatting
+    dependencies:
+      - hfmt
+      - HUnit
+      - test-framework
+      - test-framework-hunit

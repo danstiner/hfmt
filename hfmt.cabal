@@ -1,89 +1,174 @@
-name:                hfmt
-version:             0.2.3.1
-synopsis:            Haskell source code formatter
-description:         Inspired by gofmt. Built using hlint, hindent, and stylish-haskell.
-license:             MIT
-license-file:        LICENSE
-author:              Daniel Stiner
-maintainer:          Daniel Stiner <daniel.stiner@gmail.com>
-stability:           Experimental
-homepage:            http://github.com/danstiner/hfmt
-bug-reports:         http://github.com/danstiner/hfmt/issues
-category:            Language
-build-type:          Simple
-extra-source-files:  README.md, .stylish-haskell.yaml, stack.yaml
-cabal-version:       >=1.9.2
-tested-with:         GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.2, GHC == 8.5
+-- This file has been generated from package.yaml by hpack version 0.28.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 912a3ad90fffd1b307d8fb1ad79185bfee0a9c0745522b0b9ed611cdd6fddbed
 
-library
-  Hs-Source-Dirs:    src
-  Exposed-Modules:   Language.Haskell.Format
-                     , Language.Haskell.Format.Utilities
-                     , Language.Haskell.Source.Enumerator
-  Other-Modules:     Language.Haskell.Format.Internal
-                     , Language.Haskell.Format.HIndent
-                     , Language.Haskell.Format.HLint
-                     , Language.Haskell.Format.Stylish
-                     , Language.Haskell.Format.Types
-                     , Path.Find
-  GHC-Options:       -Wall
-  Build-Depends:     base >= 4.8 && < 5
-                     , bytestring
-                     , Cabal
-                     , conduit
-                     , conduit-combinators
-                     , Diff
-                     , directory
-                     , exceptions
-                     , filepath
-                     , haskell-src-exts > 1.20
-                     , hindent == 5.*
-                     , hlint == 2.*
-                     , HUnit
-                     , path
-                     , path-io
-                     , pretty
-                     , stylish-haskell == 0.9.*
-                     , text
-                     , transformers
-                     , yaml
-
-executable hfmt
-  Hs-Source-Dirs:    app
-  Main-Is:           Main.hs
-  Other-Modules:     Actions
-                   , ExitCode
-                   , Options
-                   , Types
-  GHC-Options:       -Wall
-  Build-Depends:     base >= 4.8 && < 5
-                   , conduit
-                   , conduit-combinators
-                   , directory
-                   , hfmt
-                   , ansi-wl-pprint
-                   , optparse-applicative
-
-test-suite self-formatting-test
-  Type:              exitcode-stdio-1.0
-  Hs-Source-Dirs:    test/self-formatting
-  Main-Is:           Spec.hs
-  Build-Depends:     base == 4.*
-                     , hfmt
-                     , HUnit
-                     , test-framework
-                     , test-framework-hunit
-
-test-suite pure-test
-  Type:              exitcode-stdio-1.0
-  Hs-Source-Dirs:    test/pure
-  Main-Is:           Spec.hs
-  Build-Depends:     base == 4.*
-                     , hfmt
-                     , HUnit
-                     , test-framework
-                     , test-framework-hunit
+name:           hfmt
+version:        0.2.3.1
+synopsis:       Haskell source code formatter
+description:    Inspired by gofmt. Built using hlint, hindent, and stylish-haskell.
+category:       Language
+stability:      Experimental
+homepage:       https://github.com/danstiner/hfmt#readme
+bug-reports:    https://github.com/danstiner/hfmt/issues
+author:         Daniel Stiner
+maintainer:     Daniel Stiner <daniel.stiner@gmail.com>
+license:        MIT
+license-file:   LICENSE
+tested-with:    GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.2, GHC == 8.5
+build-type:     Simple
+cabal-version:  >= 1.10
+extra-source-files:
+    .stylish-haskell.yaml
+    LICENSE
+    README.md
+    stack.yaml
 
 source-repository head
   type: git
-  location: git://github.com:danstiner/hfmt.git
+  location: https://github.com/danstiner/hfmt
+
+library
+  exposed-modules:
+      Language.Haskell.Format
+      Language.Haskell.Format.Utilities
+      Language.Haskell.Source.Enumerator
+  other-modules:
+      Language.Haskell.Format.HIndent
+      Language.Haskell.Format.HLint
+      Language.Haskell.Format.Internal
+      Language.Haskell.Format.Stylish
+      Language.Haskell.Format.Types
+      Path.Find
+      Paths_hfmt
+  hs-source-dirs:
+      src
+  ghc-options: -Wall
+  build-depends:
+      Cabal
+    , Diff
+    , HUnit
+    , base >=4.8 && <5
+    , bytestring
+    , conduit
+    , conduit-combinators
+    , directory
+    , exceptions
+    , filepath
+    , haskell-src-exts >1.20
+    , hindent ==5.*
+    , hlint ==2.*
+    , path
+    , path-io
+    , pretty
+    , stylish-haskell ==0.9.*
+    , text
+    , transformers
+    , yaml
+  default-language: Haskell2010
+
+executable hfmt
+  main-is: Main.hs
+  other-modules:
+      Actions
+      ExitCode
+      Options
+      Types
+      Paths_hfmt
+  hs-source-dirs:
+      app
+  ghc-options: -Wall
+  build-depends:
+      Cabal
+    , Diff
+    , HUnit
+    , ansi-wl-pprint
+    , base >=4.8 && <5
+    , bytestring
+    , conduit
+    , conduit-combinators
+    , directory
+    , exceptions
+    , filepath
+    , haskell-src-exts >1.20
+    , hfmt
+    , hindent ==5.*
+    , hlint ==2.*
+    , optparse-applicative
+    , path
+    , path-io
+    , pretty
+    , stylish-haskell ==0.9.*
+    , text
+    , transformers
+    , yaml
+  default-language: Haskell2010
+
+test-suite pure
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_hfmt
+  hs-source-dirs:
+      test/pure
+  ghc-options: -Wall
+  build-depends:
+      Cabal
+    , Diff
+    , HUnit
+    , base >=4.8 && <5
+    , bytestring
+    , conduit
+    , conduit-combinators
+    , directory
+    , exceptions
+    , filepath
+    , haskell-src-exts >1.20
+    , hfmt
+    , hindent ==5.*
+    , hlint ==2.*
+    , path
+    , path-io
+    , pretty
+    , stylish-haskell ==0.9.*
+    , test-framework
+    , test-framework-hunit
+    , text
+    , transformers
+    , yaml
+  default-language: Haskell2010
+
+test-suite self-formatting-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_hfmt
+  hs-source-dirs:
+      test/self-formatting
+  ghc-options: -Wall
+  build-depends:
+      Cabal
+    , Diff
+    , HUnit
+    , base >=4.8 && <5
+    , bytestring
+    , conduit
+    , conduit-combinators
+    , directory
+    , exceptions
+    , filepath
+    , haskell-src-exts >1.20
+    , hfmt
+    , hindent ==5.*
+    , hlint ==2.*
+    , path
+    , path-io
+    , pretty
+    , stylish-haskell ==0.9.*
+    , test-framework
+    , test-framework-hunit
+    , text
+    , transformers
+    , yaml
+  default-language: Haskell2010
