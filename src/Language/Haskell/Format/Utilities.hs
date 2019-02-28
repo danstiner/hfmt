@@ -68,7 +68,7 @@ assertCheckResult result =
         (hasSuggestions reformatted)
         (concatMap show (suggestions reformatted))
     whenMaybe :: Bool -> a -> Maybe a
-    whenMaybe cond val = const val <$> guard cond
+    whenMaybe cond val = val <$ guard cond
 
 showDiff :: HaskellSource -> HaskellSource -> String
 showDiff (HaskellSource _ a) (HaskellSource _ b) = render (toDoc diff)
