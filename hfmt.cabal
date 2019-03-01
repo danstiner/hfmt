@@ -16,7 +16,7 @@ author:         Daniel Stiner
 maintainer:     Daniel Stiner <daniel.stiner@gmail.com>
 license:        MIT
 license-file:   LICENSE
-tested-with:    GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.2, GHC == 8.5
+tested-with:    GHC ==8.0.2 || ==8.2.2 || ==8.4.4 || ==8.6.3
 build-type:     Simple
 cabal-version:  >= 1.10
 extra-source-files:
