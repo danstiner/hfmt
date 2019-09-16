@@ -28,23 +28,19 @@ instance Show SourceFile where
   show StdinSource           = "-"
 
 data SourceFileWithContents =
-  SourceFileWithContents SourceFile
-                         HaskellSource
+  SourceFileWithContents SourceFile HaskellSource
 
 type FormatResult = Either FormatError Formatted
 
 data FormatError =
-  FormatError SourceFile
-              String
+  FormatError SourceFile String
 
 instance Show FormatError where
   show (FormatError input errorString) =
     "Error reformatting " ++ show input ++ ": " ++ errorString
 
 data Formatted =
-  Formatted SourceFile
-            HaskellSource
-            Reformatted
+  Formatted SourceFile HaskellSource Reformatted
 
 data RunResult
   = OperationalFailure

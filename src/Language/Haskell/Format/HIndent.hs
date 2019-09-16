@@ -20,8 +20,7 @@ import           Language.Haskell.Format.Internal
 import           Language.Haskell.Format.Types
 
 data Settings =
-  Settings Config
-           (Maybe [Extension])
+  Settings Config (Maybe [Extension])
 
 defaultFormatter :: IO Formatter
 defaultFormatter = formatter <$> autoSettings

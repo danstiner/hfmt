@@ -15,13 +15,14 @@ import           Options.Applicative.Common
 import           Options.Applicative.Extra
 import           Text.PrettyPrint.ANSI.Leijen as Leijen hiding ((<$>), (<>))
 
-data Options = Options
-  { optPrintDiffs     :: Bool
-  , optPrintSources   :: Bool
-  , optPrintFilePaths :: Bool
-  , optWriteSources   :: Bool
-  , optPaths          :: [FilePath]
-  }
+data Options =
+  Options
+    { optPrintDiffs     :: Bool
+    , optPrintSources   :: Bool
+    , optPrintFilePaths :: Bool
+    , optWriteSources   :: Bool
+    , optPaths          :: [FilePath]
+    }
 
 optAction :: Options -> Action
 optAction options
@@ -36,24 +37,28 @@ optionParser :: Parser Options
 optionParser =
   Options <$>
   switch
-    (long "print-diffs" <> short 'd' <>
-     help "If a file's formatting is different, print a diff.") <*>
+    (long "print-diffs" <>
+     short 'd' <> help "If a file's formatting is different, print a diff.") <*>
   switch
-    (long "print-sources" <> short 's' <> hidden <>
-     help "If a file's formatting is different, print its source.") <*>
+    (long "print-sources" <>
+     short 's' <>
+     hidden <> help "If a file's formatting is different, print its source.") <*>
   switch
-    (long "print-paths" <> short 'l' <> hidden <>
-     help "If a file's formatting is different, print its path.") <*>
+    (long "print-paths" <>
+     short 'l' <>
+     hidden <> help "If a file's formatting is different, print its path.") <*>
   switch
-    (long "write-sources" <> short 'w' <> hidden <>
-     help "If a file's formatting is different, overwrite it.") <*>
+    (long "write-sources" <>
+     short 'w' <>
+     hidden <> help "If a file's formatting is different, overwrite it.") <*>
   many pathOption
   where
     pathOption = strArgument (metavar "FILE" <> pathOptionHelp)
     pathOptionHelp =
       helpDoc $
       Just $
-      text "Explicit paths to process." <> line <>
+      text "Explicit paths to process." <>
+      line <>
       unorderdedList
         " - "
         [ text "A single '-' will process standard input."
@@ -73,7 +78,8 @@ optionParserInfo :: ParserInfo Options
 optionParserInfo =
   info
     (helper <*> optionParser)
-    (fullDesc <> header "hfmt - Format Haskell programs" <>
+    (fullDesc <>
+     header "hfmt - Format Haskell programs" <>
      progDesc
        "Reformats Haskell source files by applying HLint, hindent, and stylish-haskell." <>
      footerDoc (Just ExitCode.helpDoc) <>

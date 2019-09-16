@@ -11,8 +11,7 @@ import Data.Semigroup (Semigroup, (<>))
 type ErrorString = String
 
 data HaskellSource =
-  HaskellSource FilePath
-                String
+  HaskellSource FilePath String
   deriving (Eq)
 
 newtype Suggestion =
@@ -21,10 +20,11 @@ newtype Suggestion =
 instance Show Suggestion where
   show (Suggestion text) = text
 
-data Reformatted = Reformatted
-  { reformattedSource :: HaskellSource
-  , suggestions       :: [Suggestion]
-  }
+data Reformatted =
+  Reformatted
+    { reformattedSource :: HaskellSource
+    , suggestions       :: [Suggestion]
+    }
 
 instance Semigroup Reformatted where
   (Reformatted _ suggestionsA) <> (Reformatted sourceB suggestionsB) =
@@ -34,9 +34,10 @@ instance Monoid Reformatted where
   mempty = Reformatted undefined []
   mappend = (<>)
 
-newtype Formatter = Formatter
-  { unFormatter :: HaskellSource -> Either ErrorString Reformatted
-  }
+newtype Formatter =
+  Formatter
+    { unFormatter :: HaskellSource -> Either ErrorString Reformatted
+    }
 
 instance Semigroup Formatter where
   (Formatter f) <> (Formatter g) = Formatter (asReformatter g <=< f)
