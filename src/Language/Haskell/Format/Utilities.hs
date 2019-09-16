@@ -21,10 +21,8 @@ import Text.PrettyPrint
 type ErrorString = String
 
 data CheckResult
-  = InvalidCheckResult HaskellSource
-                       ErrorString
-  | CheckResult HaskellSource
-                Reformatted
+  = InvalidCheckResult HaskellSource ErrorString
+  | CheckResult HaskellSource Reformatted
 
 checkResultPath :: CheckResult -> FilePath
 checkResultPath (InvalidCheckResult (HaskellSource filepath _) _) = filepath
