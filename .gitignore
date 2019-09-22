@@ -8,6 +8,7 @@
 *.chs.h
 *.tmp
 .virthualenv
+.idea
 *.sublime-workspace
 .hsenv
 .cabal-sandbox/
