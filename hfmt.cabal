@@ -1,8 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.28.2.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 912a3ad90fffd1b307d8fb1ad79185bfee0a9c0745522b0b9ed611cdd6fddbed
+-- hash: 01e8f8e707b78d3f39583670cae3dcb5ebb9a547e2c4339df12335f49d71598f
 
 name:           hfmt
 version:        0.2.3.1
@@ -16,9 +18,8 @@ author:         Daniel Stiner
 maintainer:     Daniel Stiner <daniel.stiner@gmail.com>
 license:        MIT
 license-file:   LICENSE
-tested-with:    GHC ==8.0.2 || ==8.2.2 || ==8.4.4 || ==8.6.3
+tested-with:    GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.2, GHC == 8.5
 build-type:     Simple
-cabal-version:  >= 1.10
 extra-source-files:
     .stylish-haskell.yaml
     LICENSE
@@ -62,7 +63,7 @@ library
     , path
     , path-io
     , pretty
-    , stylish-haskell ==0.9.*
+    , stylish-haskell ==0.11.*
     , text
     , transformers
     , yaml
@@ -99,7 +100,7 @@ executable hfmt
     , path
     , path-io
     , pretty
-    , stylish-haskell ==0.9.*
+    , stylish-haskell ==0.11.*
     , text
     , transformers
     , yaml
@@ -131,7 +132,7 @@ test-suite pure
     , path
     , path-io
     , pretty
-    , stylish-haskell ==0.9.*
+    , stylish-haskell ==0.11.*
     , test-framework
     , test-framework-hunit
     , text
@@ -165,7 +166,7 @@ test-suite self-formatting-test
     , path
     , path-io
     , pretty
-    , stylish-haskell ==0.9.*
+    , stylish-haskell ==0.11.*
     , test-framework
     , test-framework-hunit
     , text

@@ -12,12 +12,26 @@ packages:
   original:
     hackage: hindent-5.3.1
 - completed:
-    hackage: stylish-haskell-0.9.2.2@sha256:7852ea649b83f899888fdc2559d25495d0959d832cb9ca9da53bae78df66dc0e,4581
+    hackage: stylish-haskell-0.11.0.0@sha256:1cf24f35b40557fc1784622e64e6290b7a1b1e410edd090bf379ee09df2cdc29,5369
     pantry-tree:
-      size: 2604
-      sha256: 5a3601e7630287e7e72d978dc5060395546165c9dbc079b77899e8f0e75d0bea
+      size: 3118
+      sha256: c58f40b59b1faecd136e79f0ff553af3dc4720043f86fe4cccb65ef1fb6665cc
   original:
-    hackage: stylish-haskell-0.9.2.2
+    hackage: stylish-haskell-0.11.0.0
+- completed:
+    hackage: HsYAML-0.2.1.0@sha256:6e63cbc919543c5a837040f063e96fe0a4e43bef8ab3c057cef8f122396fdc2d,5469
+    pantry-tree:
+      size: 1340
+      sha256: 77d9299977dfbc7836cbbcb51fe890bb70d485d9dd89a3bbe54822635faa8108
+  original:
+    hackage: HsYAML-0.2.1.0
+- completed:
+    hackage: HsYAML-aeson-0.2.0.0@sha256:6f9c10b46162fbd1562d89da94b46f3b7e8b5731a71fdb73438a2a251997a490,1853
+    pantry-tree:
+      size: 234
+      sha256: db01d1a92edd78336e0d4a608f0a8153cb8f7612fc8ae9cd45e9014c941d6db9
+  original:
+    hackage: HsYAML-aeson-0.2.0.0
 snapshots:
 - completed:
     size: 524127
