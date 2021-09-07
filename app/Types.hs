@@ -49,11 +49,11 @@ data RunResult
   | NoDifferences
 
 instance Semigroup RunResult where
-  x <> NoDifferences = x
-  NoDifferences <> x = x
+  x <> NoDifferences      = x
+  NoDifferences <> x      = x
   OperationalFailure <> _ = OperationalFailure
   SourceParseFailure <> _ = SourceParseFailure
-  HadDifferences <> _ = HadDifferences
+  HadDifferences <> _     = HadDifferences
 
 instance Monoid RunResult where
   mempty = NoDifferences

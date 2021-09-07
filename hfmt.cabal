@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 01e8f8e707b78d3f39583670cae3dcb5ebb9a547e2c4339df12335f49d71598f
+-- hash: bfca23291e46e4022a16c7081bd750bb2d8ccd533b846b8368a86b2f8ac9bcba
 
 name:           hfmt
 version:        0.2.3.1
@@ -18,7 +18,8 @@ author:         Daniel Stiner
 maintainer:     Daniel Stiner <daniel.stiner@gmail.com>
 license:        MIT
 license-file:   LICENSE
-tested-with:    GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.2, GHC == 8.5
+tested-with:
+    GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.2, GHC == 8.5
 build-type:     Simple
 extra-source-files:
     .stylish-haskell.yaml
@@ -59,11 +60,11 @@ library
     , filepath
     , haskell-src-exts >1.20
     , hindent ==5.*
-    , hlint ==2.*
+    , hlint ==3.*
     , path
     , path-io
     , pretty
-    , stylish-haskell ==0.11.*
+    , stylish-haskell
     , text
     , transformers
     , yaml
@@ -95,12 +96,12 @@ executable hfmt
     , haskell-src-exts >1.20
     , hfmt
     , hindent ==5.*
-    , hlint ==2.*
+    , hlint ==3.*
     , optparse-applicative
     , path
     , path-io
     , pretty
-    , stylish-haskell ==0.11.*
+    , stylish-haskell
     , text
     , transformers
     , yaml
@@ -128,11 +129,11 @@ test-suite pure
     , haskell-src-exts >1.20
     , hfmt
     , hindent ==5.*
-    , hlint ==2.*
+    , hlint ==3.*
     , path
     , path-io
     , pretty
-    , stylish-haskell ==0.11.*
+    , stylish-haskell
     , test-framework
     , test-framework-hunit
     , text
@@ -162,11 +163,11 @@ test-suite self-formatting-test
     , haskell-src-exts >1.20
     , hfmt
     , hindent ==5.*
-    , hlint ==2.*
+    , hlint ==3.*
     , path
     , path-io
     , pretty
-    , stylish-haskell ==0.11.*
+    , stylish-haskell
     , test-framework
     , test-framework-hunit
     , text

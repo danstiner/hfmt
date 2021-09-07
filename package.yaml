@@ -31,12 +31,12 @@ dependencies:
   - filepath
   - haskell-src-exts > 1.20
   - hindent == 5.*
-  - hlint == 2.*
+  - hlint == 3.*
   - HUnit
   - path
   - path-io
   - pretty
-  - stylish-haskell == 0.11.*
+  - stylish-haskell
   - text
   - transformers
   - yaml
