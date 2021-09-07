@@ -36,7 +36,7 @@ dependencies:
   - path
   - path-io
   - pretty
-  - stylish-haskell == 0.9.*
+  - stylish-haskell == 0.11.*
   - text
   - transformers
   - yaml
