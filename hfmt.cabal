@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bfca23291e46e4022a16c7081bd750bb2d8ccd533b846b8368a86b2f8ac9bcba
+-- hash: 6d7853478e04459c8a1deaa7ed7c777a0697daa58c4618b217fde3c1d58d0d18
 
 name:           hfmt
-version:        0.2.3.1
+version:        0.3.0.0
 synopsis:       Haskell source code formatter
 description:    Inspired by gofmt. Built using hlint, hindent, and stylish-haskell.
 category:       Language
