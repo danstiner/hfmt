@@ -3,14 +3,13 @@ module Language.Haskell.Format.HLint
   , suggester
   ) where
 
-import           Language.Haskell.Format.Internal
-import           Language.Haskell.Format.Types
+import Language.Haskell.Format.Internal
+import Language.Haskell.Format.Types
 
-import           Language.Haskell.HLint3          (Classify, Hint,
-                                                   ParseError (..), ParseFlags,
-                                                   applyHints, parseModuleEx)
-import qualified Language.Haskell.HLint3          as HLint3
-import           System.IO.Unsafe                 (unsafePerformIO)
+import Language.Haskell.HLint           (Classify, Hint, Idea, ParseError (..),
+                                         ParseFlags, applyHints, argsSettings,
+                                         parseModuleEx)
+import System.IO.Unsafe                 (unsafePerformIO)
 
 suggester :: (ParseFlags, [Classify], Hint) -> Formatter
 suggester = mkSuggester . hlint
@@ -27,7 +26,7 @@ hlint (flags, classify, hint) (HaskellSource filepath source) =
     ideas m = applyHints classify hint [m]
 
 autoSettings :: IO (ParseFlags, [Classify], Hint)
-autoSettings = HLint3.argsSettings []
+autoSettings = argsSettings []
 
-ideaToSuggestion :: HLint3.Idea -> Suggestion
+ideaToSuggestion :: Idea -> Suggestion
 ideaToSuggestion = Suggestion . show

@@ -17,11 +17,11 @@ import Text.PrettyPrint.ANSI.Leijen
 -- assume we are being run in a context where non-zero exit indicates
 -- failure of the tool to operate properly.
 exitCode :: Action -> RunResult -> ExitCode
-exitCode _ NoDifferences = ExitSuccess
+exitCode _ NoDifferences           = ExitSuccess
 exitCode PrintDiffs HadDifferences = ExitFailure formattedCodeDiffersFailureCode
-exitCode _ HadDifferences = ExitSuccess
-exitCode _ SourceParseFailure = ExitFailure sourceParseFailureCode
-exitCode _ OperationalFailure = ExitFailure operationalFailureCode
+exitCode _ HadDifferences          = ExitSuccess
+exitCode _ SourceParseFailure      = ExitFailure sourceParseFailureCode
+exitCode _ OperationalFailure      = ExitFailure operationalFailureCode
 
 helpDoc :: Doc
 helpDoc =

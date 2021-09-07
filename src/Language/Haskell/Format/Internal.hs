@@ -6,7 +6,7 @@ module Language.Haskell.Format.Internal
 import Language.Haskell.Format.Types
 
 mkFormatter :: (HaskellSource -> Either String HaskellSource) -> Formatter
-mkFormatter f = Formatter (fmap (\source -> Reformatted source []) . f)
+mkFormatter f = Formatter (fmap (`Reformatted` []) . f)
 
 mkSuggester :: (HaskellSource -> Either String [Suggestion]) -> Formatter
 mkSuggester f = Formatter $ \source -> Reformatted source <$> f source

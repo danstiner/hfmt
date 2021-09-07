@@ -5,36 +5,22 @@
 
 packages:
 - completed:
-    hackage: hindent-5.3.1@sha256:23dc3d423820a1de4a11f54eb87992f2c9fa1b686b2230bb06d1af46edc85c4b,3452
+    hackage: hindent-5.3.2@sha256:070a3622d13e6f0c44d8d189df8f780f61d0b813435a902925ef6d9386b42260,3610
     pantry-tree:
       size: 1027
-      sha256: 29ea7cff1847793ca6249158ad919f4bb7095e59067f9750f4ce7051496e03d0
+      sha256: 36f9c65bbe71c49741c20839606494dacd70c04e0e70649f1da0978aeaf5f77a
   original:
-    hackage: hindent-5.3.1
+    hackage: hindent-5.3.2
 - completed:
-    hackage: stylish-haskell-0.11.0.0@sha256:1cf24f35b40557fc1784622e64e6290b7a1b1e410edd090bf379ee09df2cdc29,5369
+    hackage: stylish-haskell-0.12.0.0@sha256:211408633a162da6ebc716ac5cdd17fc29eb437467085651885a9e0541d0d228,6012
     pantry-tree:
-      size: 3118
-      sha256: c58f40b59b1faecd136e79f0ff553af3dc4720043f86fe4cccb65ef1fb6665cc
+      size: 3724
+      sha256: 39da543c90a73c9ad95e0374abc47b11c71a39e9635afc61fd21b97295b889b0
   original:
-    hackage: stylish-haskell-0.11.0.0
-- completed:
-    hackage: HsYAML-0.2.1.0@sha256:6e63cbc919543c5a837040f063e96fe0a4e43bef8ab3c057cef8f122396fdc2d,5469
-    pantry-tree:
-      size: 1340
-      sha256: 77d9299977dfbc7836cbbcb51fe890bb70d485d9dd89a3bbe54822635faa8108
-  original:
-    hackage: HsYAML-0.2.1.0
-- completed:
-    hackage: HsYAML-aeson-0.2.0.0@sha256:6f9c10b46162fbd1562d89da94b46f3b7e8b5731a71fdb73438a2a251997a490,1853
-    pantry-tree:
-      size: 234
-      sha256: db01d1a92edd78336e0d4a608f0a8153cb8f7612fc8ae9cd45e9014c941d6db9
-  original:
-    hackage: HsYAML-aeson-0.2.0.0
+    hackage: stylish-haskell-0.12.0.0
 snapshots:
 - completed:
-    size: 524127
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/14/6.yaml
-    sha256: dc70dfb45e2c32f54719819bd055f46855dd4b3bd2e58b9f3f38729a2d553fbb
-  original: lts-14.6
+    size: 563099
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/17/2.yaml
+    sha256: 92b1a17e31d0a978fca4bf270305d4d1dd8092271bf60eafbc9349c890854026
+  original: lts-17.2

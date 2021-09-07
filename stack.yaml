@@ -1,9 +1,7 @@
-resolver: lts-14.6
+resolver: lts-17.2
 flags: {}
 packages:
   - '.'
 extra-deps:
-  - hindent-5.3.1
-  - stylish-haskell-0.11.0.0
-  - HsYAML-0.2.1.0
-  - HsYAML-aeson-0.2.0.0
+  - hindent-5.3.2
+  - stylish-haskell-0.12.0.0
