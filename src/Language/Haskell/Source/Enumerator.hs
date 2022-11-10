@@ -12,7 +12,10 @@ import           Distribution.PackageDescription
 import qualified Distribution.Verbosity                 as Verbosity
 import           System.Directory
 import           System.FilePath
-#if MIN_VERSION_Cabal(2,2,0)
+#if MIN_VERSION_Cabal(3,6,0)
+import           Distribution.Utils.Path
+import           Distribution.PackageDescription.Parsec (readGenericPackageDescription)
+#elif MIN_VERSION_Cabal(2,2,0)
 import           Distribution.PackageDescription.Parsec (readGenericPackageDescription)
 #elif MIN_VERSION_Cabal(2,0,0)
 import           Distribution.PackageDescription.Parse  (readGenericPackageDescription)
@@ -71,7 +74,11 @@ hasHaskellExtension :: FilePath -> Bool
 hasHaskellExtension path = ".hs" `isSuffixOf` path || ".lhs" `isSuffixOf` path
 
 sourcePaths :: GenericPackageDescription -> [FilePath]
+#if MIN_VERSION_Cabal(3,6,0) 
+sourcePaths pkg = nub $ concatMap ($ pkg) $ fmap (fmap getSymbolicPath .) pathExtractors
+#else
 sourcePaths pkg = nub $ concatMap ($ pkg) pathExtractors
+#endif
   where
     pathExtractors =
       [ maybe [] (hsSourceDirs . libBuildInfo . condTreeData) . condLibrary
