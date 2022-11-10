@@ -79,8 +79,13 @@ sourcePaths pkg = nub $ concatMap ($ pkg) $ fmap (fmap getSymbolicPath .) pathEx
 #else
 sourcePaths pkg = nub $ concatMap ($ pkg) pathExtractors
 #endif
-  where
-    pathExtractors =
+
+#if MIN_VERSION_Cabal (3,6,0)
+pathExtractors :: [GenericPackageDescription -> [SymbolicPath PackageDir SourceDir]]
+#else
+pathExtractors :: [GenericPackageDescription -> [FilePath]]
+#endif
+pathExtractors =
       [ maybe [] (hsSourceDirs . libBuildInfo . condTreeData) . condLibrary
       , concatMap (hsSourceDirs . buildInfo . condTreeData . snd) .
         condExecutables
