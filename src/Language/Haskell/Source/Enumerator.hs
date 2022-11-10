@@ -13,8 +13,8 @@ import qualified Distribution.Verbosity                 as Verbosity
 import           System.Directory
 import           System.FilePath
 #if MIN_VERSION_Cabal(3,6,0)
-import           Distribution.Utils.Path
 import           Distribution.PackageDescription.Parsec (readGenericPackageDescription)
+import           Distribution.Utils.Path
 #elif MIN_VERSION_Cabal(2,2,0)
 import           Distribution.PackageDescription.Parsec (readGenericPackageDescription)
 #elif MIN_VERSION_Cabal(2,0,0)
@@ -74,26 +74,27 @@ hasHaskellExtension :: FilePath -> Bool
 hasHaskellExtension path = ".hs" `isSuffixOf` path || ".lhs" `isSuffixOf` path
 
 sourcePaths :: GenericPackageDescription -> [FilePath]
-#if MIN_VERSION_Cabal(3,6,0) 
-sourcePaths pkg = nub $ concatMap ($ pkg) $ fmap (fmap getSymbolicPath .) pathExtractors
+#if MIN_VERSION_Cabal(3,6,0)
+sourcePaths pkg =
+  nub $ concatMap ($ pkg) $ fmap (fmap getSymbolicPath .) pathExtractors
 #else
 sourcePaths pkg = nub $ concatMap ($ pkg) pathExtractors
 #endif
 
 #if MIN_VERSION_Cabal (3,6,0)
-pathExtractors :: [GenericPackageDescription -> [SymbolicPath PackageDir SourceDir]]
+pathExtractors ::
+     [GenericPackageDescription -> [SymbolicPath PackageDir SourceDir]]
 #else
 pathExtractors :: [GenericPackageDescription -> [FilePath]]
 #endif
 pathExtractors =
-      [ maybe [] (hsSourceDirs . libBuildInfo . condTreeData) . condLibrary
-      , concatMap (hsSourceDirs . buildInfo . condTreeData . snd) .
-        condExecutables
-      , concatMap (hsSourceDirs . testBuildInfo . condTreeData . snd) .
-        condTestSuites
-      , concatMap (hsSourceDirs . benchmarkBuildInfo . condTreeData . snd) .
-        condBenchmarks
-      ]
+  [ maybe [] (hsSourceDirs . libBuildInfo . condTreeData) . condLibrary
+  , concatMap (hsSourceDirs . buildInfo . condTreeData . snd) . condExecutables
+  , concatMap (hsSourceDirs . testBuildInfo . condTreeData . snd) .
+    condTestSuites
+  , concatMap (hsSourceDirs . benchmarkBuildInfo . condTreeData . snd) .
+    condBenchmarks
+  ]
 
 (<&&>) :: Applicative f => f Bool -> f Bool -> f Bool
 (<&&>) = liftA2 (&&)
